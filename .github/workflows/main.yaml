@@ -43,11 +43,3 @@ jobs:
         run: pip install -r requirements.txt
       - name: Dry run Twist workflow
         run: snakemake -n -s Twist_DNA.smk --directory tests/workflow_dry_run/twist_dna/
-      - name: Lint Code Base
-        uses: github/super-linter@v3
-        env:
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: master
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-          VALIDATE_SNAKEMAKE_SNAKEFMT: true
