@@ -25,7 +25,8 @@ RUN /venv/bin/conda-unpack
 FROM debian:buster-slim AS runtime
 
 ################## METADATA ######################
-LABEL bwa="0.7.17" samtools="1.9" python="3.8" bamtools="2.5.1"
+
+LABEL bwa="0.7.17" samtools="1.9" python="3.8" bamtools="2.5.1" gatk4="4.1.9.0"
 ################## MAINTAINER ######################
 MAINTAINER Patrik Smeds <patrik.smeds@scilifelab.uu.se>
 

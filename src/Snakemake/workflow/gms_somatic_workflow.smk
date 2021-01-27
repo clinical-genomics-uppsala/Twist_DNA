@@ -9,6 +9,9 @@ def fastq_files(wildcards):
 fastp_trimming_input = lambda wildcards: fastq_files(wildcards)
 
 
+include: "../rules/Alignment/index_bam.smk"
 include: "../rules/Fastq/Fastp_trimming.smk"
 include: "../rules/Alignment/bwa-mem.smk"
 include: "../rules/Alignment/bam-split.smk"
+include: "../rules/SNV/mutect2.smk"
+include: "../rules/VCF_fix/fix_AF_all_callers.smk"

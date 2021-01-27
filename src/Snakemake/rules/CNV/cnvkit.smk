@@ -60,7 +60,7 @@ rule Filter_cnv:
     singularity:
         config["singularity"]["python"]
     shell:
-        "(python3.6 src/Snakemake/scripts/Filter_cnv.py "
+        "(python3.6 src/python/Filter_cnv.py "
         "{input.purity} "
         "{input.relevant_genes} "
         "{input.segments} "

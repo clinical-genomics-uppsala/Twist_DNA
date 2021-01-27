@@ -82,4 +82,4 @@ rule CNV_event:
     singularity:
         config["singularity"]["python"]
     shell:
-        "(python src/Snakemake/scripts/get_cnv_ONCOCNV.py {input.calls} {output.cnv_event}) &> {log}"
+        "(python src/python/get_cnv_ONCOCNV.py {input.calls} {output.cnv_event}) &> {log}"

@@ -78,18 +78,3 @@ rule bwa_mem:
         config["singularity"].get("bwa", config["singularity"].get("default", ""))
     wrapper:
         "v0.69.0/bio/bwa/mem"
-
-
-rule samtools_index:
-    input:
-        _bwa_mem_output,
-    output:
-        _bwa_mem_output + ".bai",
-    log:
-        "logs/map/samtools_index/{sample}.log",
-    benchmark:
-        repeat("benchmarks/bwa/mem/{sample}.tsv", config.get("benchmark", {}).get("repeats", 1))
-    singularity:
-        config["singularity"].get("samtools", config["singularity"].get("default", ""))
-    wrapper:
-        "v0.69.0/bio/samtools/index"

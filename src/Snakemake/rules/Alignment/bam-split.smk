@@ -33,14 +33,7 @@ __license__ = "MIT"
    bwa_split_output="alignment/{sample}.test.REF_.bam"
 """
 
-
-def extract_chr(file):
-    chr = None
-    with open(file) as lines:
-        chr = [line.split("\t")[0] for line in lines]
-    print(str(chr))
-    return chr
-
+import src.lib.python.utils as utils
 
 _bam_split_input = "alignment/{sample}.bam"
 try:
@@ -59,7 +52,7 @@ rule bam_split:
     input:
         _bam_split_input,
     output:
-        [_bam_split_output.replace("CHR_REFERENCE", chr) for chr in extract_chr(config['reference']['ref'] + ".fai")],
+        [_bam_split_output.replace("CHR_REFERENCE", chr) for chr in utils.extract_chr(config['reference']['ref'] + ".fai")],
     params:
         extra="-reference -refPrefix ''",
     singularity:

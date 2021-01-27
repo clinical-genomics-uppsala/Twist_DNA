@@ -74,17 +74,3 @@ rule bwa_mem_fgbio2:
         config["singularity"]["bwa"]
     shell:
         "(bwa mem -t {threads} {params.extra} {params.index} {input.reads} | samtools sort -@ {threads} -m 3G -o {output} - ) &> {log}"
-
-
-rule samtools_index_fgbio2:
-    input:
-        #"bam/{sample}-sort-cumi.bam"
-        "DNA_bam/{sample}-ready.bam",
-    output:
-        "DNA_bam/{sample}-ready.bam.bai",  #"bam/{sample}-sort-cumi.bam.bai"
-    log:
-        "logs/fgbio/samtools_index2/{sample}-ready.log",
-    singularity:
-        config["singularity"]["samtools"]
-    shell:
-        "(samtools index {input} {output}) &> {log}"

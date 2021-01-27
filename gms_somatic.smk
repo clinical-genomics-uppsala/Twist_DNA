@@ -13,7 +13,7 @@ wildcard_constraints:
 
 rule all:
     input:
-        ["alignment/" + sample.Index + ".chr1." + type for sample in samples.itertuples() for type in ["bam",]]
+        ["mutect2/" + sample.Index + "." + type for sample in samples.itertuples() for type in ["mutect2.okAF.vcf"]]
 
 
 include: "src/Snakemake/workflow/gms_somatic_workflow.smk"

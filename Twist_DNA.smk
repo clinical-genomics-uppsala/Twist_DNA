@@ -1,6 +1,10 @@
 
 configfile: "Twist_DNA.yaml"
 
+wildcard_constraints:
+    unit="[A-Za-z0-9]+",
+    sample="[^.]+",
+
 def get_input():
     input_list = []
     '''Demultiplexning'''
