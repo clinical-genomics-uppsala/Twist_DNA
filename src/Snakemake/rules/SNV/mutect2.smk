@@ -46,9 +46,11 @@ __license__ = "GPL3"
 
 import src.lib.python.utils as utils
 
+
 localrules:
     split_bedfile,
     fixSB,
+
 
 _mutect_input = "alignment/{sample}.{chr}.bam"
 try:
@@ -95,7 +97,7 @@ rule mutect2:
         vcf=temp("mutect2/temp/{sample}.{chr}.mutect2.unfilt.vcf.gz"),
         vcf_tbi=temp("mutect2/temp/{sample}.{chr}.mutect2.unfilt.vcf.gz.tbi"),
     params:
-        extra=lambda wildcards: "--bam-output mutect2/bam/" + wildcards.sample + "." + wildcards.chr + ".indel.bam"
+        extra=lambda wildcards: "--bam-output mutect2/bam/" + wildcards.sample + "." + wildcards.chr + ".indel.bam",
     threads: 1
     log:
         "logs/variantCalling/mutect2_{sample}.{chr}.log",
@@ -116,7 +118,7 @@ rule filterMutect2:
         vcf=temp("mutect2/temp/{sample}.{chr}.mutect2.vcf.gz"),
         vcf_tbi=temp("mutect2/temp/{sample}.{chr}.mutect2.vcf.gz.tbi"),
     params:
-        extra=config.get("mutect_vcf_filter", "")
+        extra=config.get("mutect_vcf_filter", ""),
     log:
         "logs/variantCalling/mutect2/filter_{sample}.{chr}.log",
     singularity:
@@ -127,7 +129,9 @@ rule filterMutect2:
 
 rule Merge_vcf:
     input:
-        calls=expand("mutect2/temp/{{sample}}.{chr}.mutect2.vcf.gz", chr=utils.extract_chr(config['reference']['ref'] + ".fai")),
+        calls=expand(
+            "mutect2/temp/{{sample}}.{chr}.mutect2.vcf.gz", chr=utils.extract_chr(config['reference']['ref'] + ".fai"),
+        ),
     output:
         temp("mutect2/temp/{sample}.mutect2.SB.vcf"),
     log:
@@ -165,7 +169,10 @@ rule mutect2HardFilter:
 
 rule merge_mutect_bam:
     input:
-        expand("mutect2/bam_temp2/{{sample}}-ready.{chr}.indel.bam", chr=utils.extract_chr(config['reference']['ref'] + ".fai")),
+        expand(
+            "mutect2/bam_temp2/{{sample}}-ready.{chr}.indel.bam",
+            chr=utils.extract_chr(config['reference']['ref'] + ".fai"),
+        ),
     output:
         _mutect_output_bam,
     log:

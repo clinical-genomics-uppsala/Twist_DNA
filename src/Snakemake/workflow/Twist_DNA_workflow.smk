@@ -32,10 +32,12 @@ include: "../rules/CNV/GATK_CNV.smk"
 if config["programs"]["Duplicates"] == "fgbio":
 
     include: "../rules/Alignment/fgbio.smk"
-    bam_split_input="DNA_bam/{sample}-ready.bam"
+
 
 else:
     if config["programs"]["markduplicate"] == "GPU":
+
+        bam_split_input = "DNA_bam/{sample}-ready.bam"
 
         include: "../rules/Alignment/GPU_alignment.smk"
 
@@ -47,8 +49,8 @@ else:
         include: "../rules/Alignment/bwa-mem.smk"
         include: "../rules/Alignment/MarkDuplicates.smk"
 
-include: "../rules/Alignment/bam-split.smk"
 
+include: "../rules/Alignment/bam-split.smk"
 include: "../rules/SNV/freebayes.smk"
 include: "../rules/SNV/mutect2.smk"
 include: "../rules/SNV/vardict_T.smk"

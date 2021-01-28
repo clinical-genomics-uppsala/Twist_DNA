@@ -16,7 +16,7 @@ __license__ = "MIT"
             "alignment/{sample}.bam"
  Output variable:   
     bwa_split_output: optional
-        Default: where CHR_REFERENCE will be converted to chr1, ... chrX if chromosome 1 is named chr1 in the fai file
+        Default: where REF will be converted to chr1, ... chrX if chromosome 1 is named chr1 in the fai file
             ["alignment/{sample}.chr1.bam", ... , "alignment/{sample}.chrXX.bam"]    
  Config dict keys: values
     config["reference"]["ref"]': required for default output, used to locate fai-file
@@ -41,7 +41,7 @@ try:
 except:
     pass
 
-_bam_split_output = "alignment/{sample}.CHR_REFERENCE.bam"
+_bam_split_output = "alignment/{sample}.REF.bam"
 try:
     _bam_split_output = bam_split_output
 except:
@@ -52,7 +52,7 @@ rule bam_split:
     input:
         _bam_split_input,
     output:
-        [_bam_split_output.replace("CHR_REFERENCE", chr) for chr in utils.extract_chr(config['reference']['ref'] + ".fai")],
+        [_bam_split_output.replace("REF", chr) for chr in utils.extract_chr(config['reference']['ref'] + ".fai")],
     params:
         extra="-reference -refPrefix ''",
     singularity:

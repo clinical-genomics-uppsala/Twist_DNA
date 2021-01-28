@@ -57,10 +57,6 @@ rule samtools_index:
         _index_bam_input,
     output:
         _index_bam_output,
-    #log:
-    #    "logs/samtools_index/{bam_file}.log",
-    #benchmark:
-    #    repeat("benchmarks/samtools_index/{bam_file}.tsv", config.get("benchmark", {}).get("repeats", 1)),
     singularity:
         config["singularity"].get("samtools", config["singularity"].get("default", ""))
     wrapper:

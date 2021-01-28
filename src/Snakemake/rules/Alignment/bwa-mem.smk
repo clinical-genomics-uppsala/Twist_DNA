@@ -77,4 +77,4 @@ rule bwa_mem:
     singularity:
         config["singularity"].get("bwa", config["singularity"].get("default", ""))
     wrapper:
-        "v0.69.0/bio/bwa/mem"
+        "0.70.0/bio/bwa/mem"
