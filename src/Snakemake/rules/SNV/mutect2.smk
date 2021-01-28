@@ -159,8 +159,8 @@ rule mutect2HardFilter:
         "logs/variantCalling/mutect2/{sample}.hardFilt.log",
     singularity:
         config["singularity"].get("python", config["singularity"].get("default", ""))
-    shell:
-        "(python src/python/hardFilter_PASS_mutect2.py {input.vcf} {output}) &> {log}"
+    script:
+        "../../../scripts/python/hardFilter_PASS_mutect2.py"
 
 
 rule merge_mutect_bam:
