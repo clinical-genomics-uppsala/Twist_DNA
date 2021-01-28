@@ -89,15 +89,14 @@ rule mutect2:
         fasta=config["reference"]["ref"],
         bed="mutect2/bedfile.{chr}.bed",
     output:
-        bam=temp("mutect2/temp/{sample}.{chr}.indel.bam"),
-        bai=temp("mutect2/temp/{sample}.{chr}.indel.bai"),
+        bam=temp("mutect2/bam/{sample}.{chr}.indel.bam"),
+        bai=temp("mutect2/bam/{sample}.{chr}.indel.bai"),
         stats=temp("mutect2/temp/{sample}.{chr}.mutect2.unfilt.vcf.gz.stats"),
         vcf=temp("mutect2/temp/{sample}.{chr}.mutect2.unfilt.vcf.gz"),
         vcf_tbi=temp("mutect2/temp/{sample}.{chr}.mutect2.unfilt.vcf.gz.tbi"),
     params:
-        extra=lambda wildcards: "--bam-output mutect2/bam_temp2/{wildcards.sample}-ready.{wildcards.chr}.indel.bam"
-    threads:
-        10
+        extra=lambda wildcards: "--bam-output mutect2/bam/" + wildcards.sample + "." + wildcards.chr + ".indel.bam"
+    threads: 1
     log:
         "logs/variantCalling/mutect2_{sample}.{chr}.log",
     singularity:
@@ -115,7 +114,7 @@ rule filterMutect2:
         fasta=config["reference"]["ref"],
     output:
         vcf=temp("mutect2/temp/{sample}.{chr}.mutect2.vcf.gz"),
-        vcf_tbi=temp("mutect2/temp{sample}.{chr}.mutect2.vcf.gz.tbi"),
+        vcf_tbi=temp("mutect2/temp/{sample}.{chr}.mutect2.vcf.gz.tbi"),
     params:
         extra=config.get("mutect_vcf_filter", "")
     log:
@@ -128,7 +127,7 @@ rule filterMutect2:
 
 rule Merge_vcf:
     input:
-        vcf=expand("mutect2/temp/{{sample}}.{chr}.mutect2.vcf.gz", chr=utils.extract_chr(config['reference']['ref'] + ".fai")),
+        calls=expand("mutect2/temp/{{sample}}.{chr}.mutect2.vcf.gz", chr=utils.extract_chr(config['reference']['ref'] + ".fai")),
     output:
         temp("mutect2/temp/{sample}.mutect2.SB.vcf"),
     log:
@@ -136,7 +135,7 @@ rule Merge_vcf:
     singularity:
         config["singularity"].get("bcftools", config["singularity"].get("default", ""))
     wrapper:
-        "0.70.0/bio/gcftools/concat"
+        "0.70.0/bio/bcftools/concat"
 
 
 rule fixSB:

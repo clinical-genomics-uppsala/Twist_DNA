@@ -7,5 +7,6 @@ dependencies:
   - bwa=0.7.17
   - samtools=1.9
   - bamtools=2.5.1
+  - bcftools=1.11
   - gatk4=4.1.9.0
   - snakemake-wrapper-utils=0.1.3
