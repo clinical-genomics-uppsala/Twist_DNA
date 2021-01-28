@@ -14,6 +14,8 @@ RUN conda-pack -n gms_somatic -o /tmp/env.tar && \
   mkdir /venv && cd /venv && tar xf /tmp/env.tar && \
   rm /tmp/env.tar
 
+COPY requirements.txt /
+RUN pip install -r requirements.txt
 # We've put venv in same path it'll be in final image,
 # so now fix up paths:
 RUN /venv/bin/conda-unpack
@@ -27,7 +29,7 @@ FROM debian:buster-slim AS runtime
 ################## METADATA ######################
 
 LABEL bwa="0.7.17" samtools="1.9" python="3.8" bamtools="2.5.1" bcftools="1.11" gatk4="4.1.9.0"
-LABEL snakemake-wrapper-utils="0.1.3"
+LABEL snakemake-wrapper-utils="0.1.3" pysam="0.16.0" pandas="1.2.0"
 ################## MAINTAINER ######################
 MAINTAINER Patrik Smeds <patrik.smeds@scilifelab.uu.se>
 

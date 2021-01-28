@@ -10,4 +10,3 @@ dependencies:
   - gatk4=4.1.9.0
   - snakemake-wrapper-utils=0.1.3
   - bcftools=1.9
-  - pysam=0.15.2
