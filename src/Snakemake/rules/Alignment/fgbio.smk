@@ -22,17 +22,17 @@ rule bwa_mem_fgbio1:
         " | {params.samtools_singularity} samtools view -b -o {output} - ) &> {log}"
 
 
-rule samtools_index_fgbio1:
-    input:
-        "bam/{sample}-sort.bam",
-    output:
-        "bam/{sample}-sort.bam.bai",
-    log:
-        "logs/fgbio/samtools_index1/{sample}.log",
-    singularity:
-        config["singularity"]["samtools"]
-    shell:
-        "(samtools index {input} {output}) &> {log}"
+# rule samtools_index_fgbio1:
+#     input:
+#         "bam/{sample}-sort.bam",
+#     output:
+#         "bam/{sample}-sort.bam.bai",
+#     log:
+#         "logs/fgbio/samtools_index1/{sample}.log",
+#     singularity:
+#         config["singularity"]["samtools"]
+#     shell:
+#         "(samtools index {input} {output}) &> {log}"
 
 
 rule fgbio:

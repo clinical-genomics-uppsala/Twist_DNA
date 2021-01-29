@@ -52,7 +52,7 @@ localrules:
     fixSB,
 
 
-_mutect_input = "alignment/{sample}.{chr}.bam"
+_mutect_input = "alignment/temp/{sample}.{chr}.bam"
 try:
     _mutect_input = mutect_input
 except:

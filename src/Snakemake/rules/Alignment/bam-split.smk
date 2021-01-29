@@ -41,7 +41,7 @@ try:
 except:
     pass
 
-_bam_split_output = "alignment/{sample}.REF.bam"
+_bam_split_output = "alignment/temp/{sample}.REF.bam"
 try:
     _bam_split_output = bam_split_output
 except:

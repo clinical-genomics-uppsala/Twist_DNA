@@ -37,8 +37,6 @@ if config["programs"]["Duplicates"] == "fgbio":
 else:
     if config["programs"]["markduplicate"] == "GPU":
 
-        bam_split_input = "DNA_bam/{sample}-ready.bam"
-
         include: "../rules/Alignment/GPU_alignment.smk"
 
 
@@ -48,6 +46,9 @@ else:
 
         include: "../rules/Alignment/bwa-mem.smk"
         include: "../rules/Alignment/MarkDuplicates.smk"
+
+
+bam_split_input = "DNA_bam/{sample}-ready.bam"
 
 
 include: "../rules/Alignment/bam-split.smk"

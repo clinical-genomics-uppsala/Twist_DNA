@@ -32,13 +32,12 @@ rule Split_bam_Markdup:
         bai="bam/{sample}-sort.bam.bai",
     output:
         bam=temp("bam/Markdup_temp/{sample}-sort.{chr}.bam"),
-        bai=temp("bam/Markdup_temp/{sample}-sort.{chr}.bam.bai"),
     log:
         "logs/map/MarkDup/split_bam_realign_{sample}-sort.{chr}.log",
     singularity:
         config["singularity"]["samtools"]
     shell:
-        "(samtools view -b {input.bam} {wildcards.chr} > {output.bam} && samtools index {output.bam}) &> {log}"
+        "(samtools view -b {input.bam} {wildcards.chr} > {output.bam} &> {log}"
 
 
 rule MarkDuplicates:
@@ -63,10 +62,9 @@ rule Merge_bam_Markdup:
         bams=expand("bam/Markdup_temp/{{sample}}-dup.{chr}.bam", chr=chrom_list),
     output:
         bam="DNA_bam/{sample}-ready.bam",
-        bai="DNA_bam/{sample}-ready.bam.bai",
     log:
         "logs/map/MarkDup/merge_bam/{sample}.log",
     singularity:
         config["singularity"]["samtools"]
     shell:
-        "(samtools merge {output.bam} {input.bams} && samtools index {output.bam}) &> {log}"
+        "(samtools merge {output.bam} {input.bams} &> {log}"
