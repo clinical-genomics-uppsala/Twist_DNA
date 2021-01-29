@@ -7,6 +7,7 @@ def fastq_files(wildcards):
 
 
 fastp_trimming_input = lambda wildcards: fastq_files(wildcards)
+mutect2_output = "mutect2/{sample}.mutect2.fixAF.vcf"
 
 
 include: "../rules/Alignment/index_bam.smk"

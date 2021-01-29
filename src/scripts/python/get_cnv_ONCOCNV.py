@@ -2,8 +2,9 @@
 import glob
 import sys
 
-cnv_files = sys.argv[1:-1]
-cnv_event = open(sys.argv[-1], "w")
+
+cnv_files = snakemake.input.calls
+cnv_event = open(snakemake.output.cnv_event, "w")
 
 gain_loss_dict = {}
 for cnv_file_name in cnv_files:

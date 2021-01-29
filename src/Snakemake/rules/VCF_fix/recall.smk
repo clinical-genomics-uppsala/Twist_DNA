@@ -55,8 +55,8 @@ rule filter_recall:
         "logs/variantCalling/recall/{sample}.filter_recall.log",
     singularity:
         config["singularity"]["python"]
-    shell:
-        "(python3 src/lib/python/filter_recall.py {input} {output} {params}) &> {log}"
+    script:
+        "../../../scripts/python/filter_recall.py"
 
 
 rule index_filterRecall:

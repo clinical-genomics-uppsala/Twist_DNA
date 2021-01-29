@@ -6,13 +6,13 @@ import sys
 import subprocess
 
 
-cnv_purity = open(sys.argv[1])
-cnv_relevant_genes = open(sys.argv[2])
-cnv_files = sys.argv[3:-4]
-cnv_ONCOCNV = open(sys.argv[-4])
-cnv_bed_file = open(sys.argv[-3])
-raw_cnv_filename = sys.argv[-2]
-cnv_relevant = open(sys.argv[-1], "w")
+cnv_purity = open(snakemake.input.purity)
+cnv_relevant_genes = open(snakemake.input.relevant_genes)
+cnv_files = snakemake.input.segments
+cnv_ONCOCNV = open(snakemake.input.ONCOCNV_events)
+cnv_bed_file = open(snakemake.input.bed_file)
+raw_cnv_filename = snakemake.params.raw_cnv
+cnv_relevant = open(snakemake.output.relevant_cnvs, "w")
 
 
 cnv_event = open(raw_cnv_filename, "w")

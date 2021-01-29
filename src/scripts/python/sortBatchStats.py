@@ -3,9 +3,9 @@
 import sys
 import csv
 
-batchFile = sys.argv[1]
-SampleSheetUsed = sys.argv[2]
-outFile = sys.argv[3]  # should end with _mqc.json for MultiQC
+batchFile = input.batchUnsorted
+SampleSheetUsed = input.SampleSheetUsed
+outFile = output.batch  # should end with _mqc.json for MultiQC
 
 # Get all lines from get_stats.py output
 with open(batchFile, 'r') as bFile:

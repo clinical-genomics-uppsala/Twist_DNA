@@ -59,12 +59,5 @@ rule Filter_cnv:
         "logs/CNV_cnvkit/Filter_cnv.log",
     singularity:
         config["singularity"]["python"]
-    shell:
-        "(python3.6 src/python/Filter_cnv.py "
-        "{input.purity} "
-        "{input.relevant_genes} "
-        "{input.segments} "
-        "{input.ONCOCNV_events} "
-        "{input.bed_file} "
-        "{params.raw_cnv} "
-        "{output.relevant_cnvs}) &> {log}"
+    script:
+        "../../../scripts/python/Filter_cnv.py"

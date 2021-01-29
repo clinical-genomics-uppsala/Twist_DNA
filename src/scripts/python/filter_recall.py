@@ -3,11 +3,12 @@ import sys
 from pysam import VariantFile
 import subprocess
 
-vcf_in = VariantFile(sys.argv[1])
+
+vcf_in = VariantFile(snakemake.input[0])
 new_header = new_header = vcf_in.header
-vcf_out = VariantFile(sys.argv[2], 'w', header=new_header)
-sv_out = sys.argv[2] + '.svtypeDEL.txt'
-indelArteFile = sys.argv[3]
+vcf_out = VariantFile(snakemake.output[0], 'w', header=new_header)
+sv_out = snakemake.output[0] + '.svtypeDEL.txt'
+indelArteFile = snakemake.params
 
 for record in vcf_in.fetch():
     # import pdb; pdb.set_trace()

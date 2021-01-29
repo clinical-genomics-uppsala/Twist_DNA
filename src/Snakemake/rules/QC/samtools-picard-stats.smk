@@ -105,7 +105,7 @@ rule getStatsforMqc:
         #cartool = "qc/{sample}/{sample}_Log.csv",
         batch="qc/batchQC_stats_unsorted.csv",
     output:
-        batchTmp=temp("qc/{sample}/{sample}_batchStats.done"),
+        batchTmp=temp(touch("qc/{sample}/{sample}_batchStats.done")),
         #batchTmp = "qc/{sample}/{sample}_batchStats.done",
         # batch = "qc/{seqID}_stats_mqc.tsv",
         sample="qc/{sample}/{sample}_stats_mqc.csv",
@@ -115,9 +115,9 @@ rule getStatsforMqc:
         "logs/qc/{sample}_stats.log",
     singularity:
         config["singularity"]["python"]
-    shell:
+    script:
         #"(python3.6 src/lib/python/get_stats.py {input.picardMet1} {input.picardMet2} {input.picardMet3} {input.picardMet4} {input.samtools} {input.multiQCheader} {input.cartool} {wildcards.sample} {output.sample} {input.batch} && touch {output.batchTmp}) &> {log}"
-        "(python3.6 src/lib/python/get_stats.py {input.picardMet1} {input.picardMet2} {input.picardMet3} {input.picardMet4} {input.samtools} {input.multiQCheader} {wildcards.sample} {output.sample} {input.batch} && touch {output.batchTmp}) &> {log}"
+        "../../../scripts/python/get_stats.py"
 
 
 rule sortBatchStats:
@@ -134,4 +134,4 @@ rule sortBatchStats:
     singularity:
         config["singularity"]["python"]
     shell:
-        "(python3.6 src/lib/python/sortBatchStats.py {input.batchUnsorted} {input.SampleSheetUsed} {output.batch}) &> {log}"
+        "../../../scripts/python/sortBatchStats.py"

@@ -81,7 +81,7 @@ rule split_bedfile:
     log:
         "logs/variantCalling/split_bed.{chr}.log",
     shell:
-        "(grep -w {wildcards.chr} {input} || [[ $? == 1 ]] > {output}) &> {log}"
+        "(grep -w {wildcards.chr} {input}  > {output}) &> {log}"
 
 
 rule mutect2:

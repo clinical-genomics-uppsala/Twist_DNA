@@ -3,9 +3,9 @@ import sys
 import re
 from pysam import VariantFile
 
-vcf_in = VariantFile(sys.argv[1])  # dosen't matter if bgziped or not. Automatically recognizes
+vcf_in = VariantFile(snakemake.input[0])  # dosen't matter if bgziped or not. Automatically recognizes
 # method = re.search('callers/(.+?)/',sys.argv[1]).group(1)  ##The folder after callers/
-method = sys.argv[1].split("/")[0]  # The folder after callers/
+method = snakemake.input[0].split("/")[0]  # The folder after callers/
 # Add new filter descriptions to new header
 new_header = vcf_in.header
 # import pdb; pdb.set_trace()
@@ -24,7 +24,7 @@ if method == "varscan":
 
 
 # start new vcf with the new_header
-vcf_out = VariantFile(sys.argv[2], 'w', header=new_header)
+vcf_out = VariantFile(snakemake.output[0], 'w', header=new_header)
 
 for record in vcf_in.fetch():
     if method == "freebayes":

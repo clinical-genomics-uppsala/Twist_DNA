@@ -4,16 +4,17 @@ import subprocess
 import csv
 
 # picardDup = sys.argv[1]
-picardMet1 = sys.argv[1]
-picardMet2 = sys.argv[2]
-picardMet3 = sys.argv[3]
-picardMet4 = sys.argv[4]
-samtools = sys.argv[5]
-multiQCheader = sys.argv[6]
+
+picardMet1 = input.picardMet1
+picardMet2 = input.picardMet2
+picardMet3 = input.picardMet3
+picardMet4 = input.picardMet4
+samtools = input.samtools
+multiQCheader = input.multiQCheader
 # cartoolLog = sys.argv[7]
-sample = sys.argv[7]
-outFile = sys.argv[8]
-batchFile = sys.argv[9]
+sample = wildcards.sample
+outFile = snakemake.output.sample
+batchFile = snakemake.input.batch
 
 # Picard
 metCmd = 'grep -A1 BAIT_SET ' + picardMet1

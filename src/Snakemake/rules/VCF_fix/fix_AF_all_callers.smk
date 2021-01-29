@@ -8,8 +8,8 @@ rule fixAF:
         "logs/variantCalling/fixAF/{method}/{sample}.log",
     singularity:
         config["singularity"].get("python", config["singularity"].get("default", ""))
-    shell:
-        "(python3.6 src/lib/python/fix_af.py {input} {output}) &> {log}"
+    script:
+        "../../../scripts/python/fix_af.py"
 
 
 localrules:
