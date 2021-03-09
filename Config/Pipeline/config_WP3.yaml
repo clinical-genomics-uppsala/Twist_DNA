@@ -20,6 +20,7 @@ bed:
     bedfile_chrX: "/projects/wp3/Reference_files/Manifest/Clinical_research_exome/TWIST/Twist_Exome_Target_hg19_X_no_pseudo.bed"
 
 singularity:
+    default: "docker://gmsuppsala/rare_diseases:develop"
     execute: "singularity exec -B /data -B /projects -B /scratch "
     multiqc: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/multiqc-1.9.simg"
     samtools: "/projects/wp2/nobackup/Twist_Myeloid/Containers/bwa0.7.17-samtools-1.9.simg"
