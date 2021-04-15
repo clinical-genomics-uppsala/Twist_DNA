@@ -1,3 +1,6 @@
+if "units" in config:
+    units = pd.read_table(config["units"], index_col=["sample", "unit"], dtype=str)
+    units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])  # enforce str in index
 
 include: "../rules/Alignment/index_bam.smk"
 
