@@ -41,21 +41,37 @@ Extra params to bwa-mem:
  Ex
    bwa_alignment_output="alignment/{sample}.cutadapt.bam"
 """
-
+import src.lib.python.utils as utils
 
 def get_now():
     from datetime import datetime
 
     return datetime.now().strftime("%Y%m%d")
 
+def get_bam_files(wildcards):
+    if "units" in config:
+        return ["alignment/" + wildcards.sample + "_" + unit+ ".sort.bam" for unit in utils.get_units(wildcars.sample)]
+    else:
+        ["alignment/{sample}.sort.bam"]
 
 _bwa_mem_input = ["fastq/DNA/{sample}_R1.fastq.gz", "fastq/DNA/{sample}_R2.fastq.gz"]
+_temp_bwa_mem_output = "alignment/{sample}.sort.bam"
+_bwa_log = "logs/map/bwa/{sample}.log"
+_pu = "{sample}"
+if "units" in config and utils.get_num_units(units) > 1:
+    _bwa_mem_input = ["fastq/DNA/{sample}_{unit}_R1.fastq.gz", "fastq/DNA/{sample}_{unit}_R2.fastq.gz"]
+    _temp_bwa_mem_output = "alignment/{sample}_{unit}.sort.bam"
+    _bwa_log = "logs/map/bwa/{sample}_{unit}.log"
+    _pu = "{sample}_{unit}"
+
 try:
     _bwa_mem_input = bwa_mem_input
 except:
     pass
 
+
 _bwa_mem_output = "alignment/{sample}.sort.bam"
+_umi_tag_output = "alignment/{sample}.sort.noUMI.bam",
 try:
     _bwa_mem_output = bwa_mem_output
 except:
@@ -66,12 +82,12 @@ rule bwa_mem:
     input:
         reads=_bwa_mem_input,
     output:
-        bam=temp(_bwa_mem_output),
+        bam=temp(_temp_bwa_mem_output),
     log:
         "logs/map/bwa/{sample}.log",
     params:
         index=config["reference"]["ref"],
-        extra=r"-R '@RG\tID:{sample}\tSM:{sample}\tPL:illumina\tPU:{sample}' -v 1 " + config.get("bam_extra", ""),
+        extra=r"-R '@RG\tID:{sample}\tSM:{sample}\tPL:illumina\tPU:" + _pu + ' -v 1 " + config.get("bam_extra", ""),
         sort="samtools",
         sort_order="coordinate",
         sort_extra="-@ 10",
@@ -84,6 +100,20 @@ rule bwa_mem:
         "0.70.0/bio/bwa/mem"
 
 
+rule finilize_alignment_process:
+    input:
+        lambda wildcards: get_bam_files(wildcards),
+    output:
+        _bwa_mem_output,
+    singularity:
+        config["singularity"].get("samtools", config["singularity"].get("default", ""))
+    run:
+        if len(snakemake.input) > 1:
+            shell("samtools merge -c -p {output} {input}")
+        else:
+            shell("mv {input} {output}")
+
+# ToDo make it configurable 
 rule umi_tag:
     input:
         bam="alignment/{sample}.sort.noUMI.bam",

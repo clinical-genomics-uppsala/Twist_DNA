@@ -12,20 +12,14 @@ __license__ = "GPL3"
  ------------------------------------------------------------------------------
  Input variable: fastp_trimming_input: optional
      Default:
-        "fastq_temp/{sample}_R1.fastq.gz",
-        "fastq_temp/{sample}_R2.fastq.gz"
- Output variable:  
+        "fastq_temp/DNA",
+        "fastq_temp/DNA"
+ Output variable:
     fastp_trimming_output: optional
         Default:
-            "fastq/DNA/{sample}_R1.fastq.gz",
-            "fastq/DNA/{sample}_R2.fastq.gz"
-    fastp_trimming_output_html: optional
-        Default:
-            "fastq/DNA/{sample}.html"
-    fastp_trimming_output_json: optional
-        Default:
-            "fastq/DNA/{sample}.json"
-         
+            "fastq/DNA",
+            "fastq/DNA"
+
  Config dict keys: values
     config["fastp"]["adapters"] optional
     config["fastp"]["extra"] optional
@@ -36,41 +30,53 @@ __license__ = "GPL3"
     sample
  Override input format
  Ex
-  fastp_trimming_input=[
-                       "fastq/{sample}.R1.fastq.gz",
-                       "fastq/{sample}.R2.fastq.gz"
-                       ]
+  fastp_trimming_input="fastq"
  Override output format
  Ex
-   fastp_trimming_output=[
-                       "fastq/trimmed/{sample}.R1.fastq.gz",
-                       "fastq/trimmed/{sample}.R2.fastq.gz"
-                       ]
+   fastp_trimming_output="fastq/trimmed"
 """
 
-_fastp_trimming_input = ["fastq_temp/DNA/{sample}_R1.fastq.gz", "fastq_temp/DNA/{sample}_R2.fastq.gz"]
+import src.lib.python.utils as utils
+
+
+_fastp_trimming_input = "fastq_temp/DNA"
 try:
     _fastp_trimming_input = fastp_trimming_input
 except:
     pass
 
-_fastp_trimming_output = ["fastq/DNA/{sample}_R1.fastq.gz", "fastq/DNA/{sample}_R2.fastq.gz"]
+_fastp_trimming_output = "fastq/DNA"
 try:
     _fastp_trimming_output = bwa_mem_output
 except:
     pass
 
-_fastp_trimming_output_html = "fastq/DNA/{sample}.html"
-try:
-    _fastp_trimming_output_html = fastp_trimming_output_html
-except:
-    pass
 
+_fastp_trimming_input_reads = [
+    _fastp_trimming_input + "/{sample}_R1.fastq.gz",
+    _fastp_trimming_input + "/{sample}_R2.fastq.gz"
+]
+_fastp_trimming_output = [
+    _fastp_trimming_output + "/{sample}_R1.fastq.gz",
+    _fastp_trimming_output + "/{sample}_R2.fastq.gz"
+]
+_fastp_trimming_output_html = "fastq/DNA/{sample}.html"
 _fastp_trimming_output_json = "fastq/DNA/{sample}.json"
-try:
-    _fastp_trimming_output_json = fastp_trimming_output_json
-except:
-    pass
+_fastp_trimming_trimming_log = "logs/trimming/fastp/{sample}.log"
+
+if "units" in config:
+    import src.lib.python.utils as utils
+    _fastp_trimming_input = [
+        lambda wildcards: utils.get_fastq_file(units, wildcards.sample, wildcars.unit, "fq1"),
+        lambda wildcards: utils.get_fastq_file(units, wildcards.sample, wildcars.unit, "fq2")
+    ]
+    _fastp_trimming_output = [
+        _fastp_trimming_output + "/{sample}_{unit}_R1.fastq.gz",
+        _fastp_trimming_output + "/{sample}_{unit}_R2.fastq.gz"
+    ]
+    _fastp_trimming_output_html = "fastq/DNA/{sample}_{unit}.html"
+    _fastp_trimming_output_json = "fastq/DNA/{sample}_{unit}.json"
+    _fastp_trimming_trimming_log = "logs/trimming/fastp/{sample}_{unit}.log"
 
 
 rule fastp:
@@ -84,7 +90,7 @@ rule fastp:
         adapters=config.get("fastp", {}).get("adapters", ""),
         extra=config.get("fastp", {}).get("extra", ""),
     log:
-        "logs/trimming/fastp/{sample}.log",
+        _fastp_trimming_trimming_log,
     threads: 5
     benchmark:
         repeat("benchmarks/trimming/fastp/{sample}.tsv", config.get("benchmark", {}).get("repeats", 1))

@@ -30,8 +30,12 @@ configfiles:
     multiqc: "Config/Pipeline/multiqc_config.yaml"
     vep: "/data/ref_genomes/VEP/"
 
-DNA_Samples:
-  sample1: "S1"
+#DNA_Samples:
+#  sample1: "S1"
+
+samples: "sample.tsv"
+
+units: "units.tsv"
 
 runfolder_path: ./
 samplesheet:  samplesheet.csv

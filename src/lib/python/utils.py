@@ -42,3 +42,16 @@ def generate_sample_list_from_samplesheet(path):
                 samples[columns[header_map['sample_id']]]["projectpath"] = columns[header_map['project']] + "/"
             sample_counter = sample_counter + 1
     return samples
+
+
+def get_fastq_file(units, sample, unit, read_pair='fq1'):
+    files = units.loc[(sample, unit), [read_pair]].dropna()
+    if len(files) > 1:
+        raise Exception("Multiple fastq files found")
+    return units.loc[(sample, unit), [read_pair]].dropna()[0]
+
+def get_num_units(units, sample):
+    return len(units.loc[sample].index.tolist())
+
+def get_units(units, sample):
+    return units.loc[sample].index.tolist()
