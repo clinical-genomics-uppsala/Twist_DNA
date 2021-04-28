@@ -67,8 +67,8 @@ _fastp_trimming_trimming_log = "logs/trimming/fastp/{sample}.log"
 if "units" in config:
     import src.lib.python.utils as utils
     _fastp_trimming_input = [
-        lambda wildcards: utils.get_fastq_file(units, wildcards.sample, wildcars.unit, "fq1"),
-        lambda wildcards: utils.get_fastq_file(units, wildcards.sample, wildcars.unit, "fq2")
+        _fastp_trimming_input + "/{sample}_{unit}_R1.fastq.gz"
+        _fastp_trimming_input + "/{sample}_{unit}_R2.fastq.gz"
     ]
     _fastp_trimming_output = [
         _fastp_trimming_output + "/{sample}_{unit}_R1.fastq.gz",
