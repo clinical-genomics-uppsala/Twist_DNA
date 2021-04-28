@@ -1,12 +1,13 @@
+sample_list = [s.Index  for s in samples.itertuples()]
 
 rule merge_Fastq_sh:
     output:
-        fastq1=["fastq_temp/" + s + "_R1.merge_fastq.sh" for s in config["DNA_Samples"]],
-        fastq2=["fastq_temp/" + s + "_R2.merge_fastq.sh" for s in config["DNA_Samples"]],
+        fastq1=["fastq_temp/" + s + "_R1.merge_fastq.sh" for s in sample_list],
+        fastq2=["fastq_temp/" + s + "_R2.merge_fastq.sh" for s in sample_list],
     log:
         "logs/fastq/merge/merge_fastq_sh.log",
     params:
-        DNA_samples=[s for s in config["DNA_Samples"]],
+        DNA_samples=[s for s in sample_list],
     run:
         import subprocess
 

@@ -1,9 +1,71 @@
 
-rule bwa_mem_fgbio1:
+
+import src.lib.python.utils as utils
+
+def get_now():
+    from datetime import datetime
+
+    return datetime.now().strftime("%Y%m%d")
+
+_bwa_mem_fgbio1_input = ["fastq/DNA/{sample}_R1.fastq.gz", "fastq/DNA/{sample}_R2.fastq.gz"]
+_temp_bwa_mem_fgbio1_output = "alignment/{sample}.prep_fgbio.sort.bam"
+_bwa_men_fgbio1_log = "logs/map/bwa/{sample}.log"
+_bwa_benchmark_fgbio1 = "benchmarks/bwa/mem/{sample}.tsv"
+_pu = "{sample}"
+_prep_fgbio1_input = "alignment/{sample}.fgbio.sort.bam"
+if "units" in config:
+    _bwa_mem_fgbio1_input = ["fastq/DNA/{sample}_{unit}_R1.fastq.gz", "fastq/DNA/{sample}_{unit}_R2.fastq.gz"]
+    _temp_bwa_mem_fgbio1_output = "alignment/{sample}_{unit}.prep_fgbio.sort.bam"
+    _bwa_men_fgbio1_log = "logs/map/bwa/{sample}_{unit}.log"
+    _bwa_mem_fgbio1_benchmark = "benchmarks/bwa/mem/{sample}_{units}.tsv"
+    _pu = "{sample}_{unit}"
+    _prep_fgbio1_input = "alignment/{sample}.merged.prep_fgbio.sort.bam"
+
+try:
+    _bwa_mem_fgbio1_input = bwa_mem_fgbio1_input
+except:
+    pass
+
+rule bwa_mem_fgbio:
     input:
-        reads=["fastq/DNA/{sample}_R1.fastq.gz", "fastq/DNA/{sample}_R2.fastq.gz"],
+        reads=_bwa_mem_fgbio1_input,
     output:
-        temp("alignment/{sample}-sort.bam"),
+        bam=temp(_temp_bwa_mem_fgbio1_output),
+    log:
+        _bwa_men_fgbio1_log,
+    params:
+        index=config["reference"]["ref"],
+        extra=r"-R '@RG\tID:{sample}\tSM:{sample}\tPL:illumina\tPU:" + _pu + ' -v 1 ' + config.get("bam_extra", ""),
+        sort="samtools",
+        sort_order="coordinate",
+        sort_extra="-@ 10",
+    threads: 10
+    #benchmark:
+    #    repeat(_bwa_benchmark, config.get("benchmark", {}).get("repeats", 1))
+    singularity:
+        config["singularity"].get("bwa", config["singularity"].get("default", ""))
+    wrapper:
+        "0.70.0/bio/bwa/mem"
+
+
+rule merge_bam_for_fgbio:
+    input:
+        lambda wildcards: ["alignment/" + wildcards.sample + "_" + unit+ ".prep_fgbio.sort.bam" for unit in utils.get_units(units, wildcards.sample)]
+    output:
+        temp("alignment/{sample}.merged.prep_fgbio.sort.bam"),
+    singularity:
+        config["singularity"].get("samtools", config["singularity"].get("default", ""))
+    shell:
+        """
+        samtools merge -c -p {output} {input}
+        """
+
+
+rule prep_fgbio1:
+    input:
+        bam=_prep_fgbio1_input,
+    output:
+        temp("alignment/{sample}.prep_fgbio.sort.bam"),
     log:
         "logs/fgbio/bwa1/{sample}.log",
     params:
@@ -20,8 +82,7 @@ rule bwa_mem_fgbio1:
         tmp_dir="tmpfile=bam/{sample}",
     threads: 10
     shell:
-        "({params.bwa_singularity} bwa mem -t {threads} {params.extra} {params.index} {input.reads}"
-        " | {params.bamsormadup_singularity} bamsormadup {params.tmp_dir} inputformat=sam threads={threads} outputformat=bam level=0 SO=coordinate"
+        "({params.bamsormadup_singularity} bamsormadup {params.tmp_dir} inputformat=bam threads={threads} outputformat=bam level=0 SO=coordinate {input.bam}"
         " | {params.umis_singularity} umis bamtag -"
         " | {params.samtools_singularity} samtools view -b -o {output} - ) &> {log}"
 
@@ -41,7 +102,7 @@ rule bwa_mem_fgbio1:
 
 rule fgbio:
     input:
-        bam="alignment/{sample}-sort.bam",
+        bam="alignment/{sample}.prep_fgbio.sort.bam",
         ref=config["reference"]["ref"],
     output:
         fq1=temp("fastq_temp/{sample}-cumi-R1.fq.gz"),

@@ -27,11 +27,11 @@ rule Create_anti_targets:
 
 rule Call_cnv:
     input:
-        bams=["Bam/DNA/" + s + "-ready.bam" for s in config["DNA_Samples"]],
+        bams=["Bam/DNA/" + s.Index + "-ready.bam" for s in samples.itertuples()],
         PoN=config["PoN"]["cnvkit"],
     output:
-        regions=["CNV/cnvkit_calls/" + sample_id + "-ready.cnr" for sample_id in config["DNA_Samples"]],
-        segments=["CNV/cnvkit_calls/" + sample_id + "-ready.cns" for sample_id in config["DNA_Samples"]],
+        regions=["CNV/cnvkit_calls/" + sample_id.Index + "-ready.cnr" for sample_id in samples.itertuples()],
+        segments=["CNV/cnvkit_calls/" + sample_id.Index + "-ready.cns" for sample_id in samples.itertuples()],
     params:
         outdir="CNV/cnvkit_calls/",
         extra=config.get("cnvkit",{}).get("extra",""),
@@ -46,8 +46,8 @@ rule Call_cnv:
 
 rule Filter_cnv:
     input:
-        cnvkit_segments=["CNV/cnvkit_calls/" + sample_id + "-ready.cns" for sample_id in config["DNA_Samples"]],
-        GATK_CNV_segments=["CNV/CNV_GATK/" + sample_id + "_clean.modelFinal.seg" for sample_id in config["DNA_Samples"]],
+        cnvkit_segments=["CNV/cnvkit_calls/" + sample_id.Index + "-ready.cns" for sample_id in samples.itertuples()],
+        GATK_CNV_segments=["CNV/CNV_GATK/" + sample_id.Index + "_clean.modelFinal.seg" for sample_id in samples.itertuples()],
         purity="DATA/Pathological_purity_BMS_validation.txt",
         relevant_genes="DATA/TSO500_relevant_genes.txt",
         bed_file="CNV/bed/cnvkit_manifest.target.bed",

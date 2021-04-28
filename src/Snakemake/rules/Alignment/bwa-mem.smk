@@ -57,11 +57,13 @@ def get_bam_files(wildcards):
 _bwa_mem_input = ["fastq/DNA/{sample}_R1.fastq.gz", "fastq/DNA/{sample}_R2.fastq.gz"]
 _temp_bwa_mem_output = "alignment/{sample}.sort.bam"
 _bwa_log = "logs/map/bwa/{sample}.log"
+_bwa_benchmark = "benchmarks/bwa/mem/{sample}.tsv"
 _pu = "{sample}"
-if "units" in config and utils.get_num_units(units) > 1:
+if "units" in config:
     _bwa_mem_input = ["fastq/DNA/{sample}_{unit}_R1.fastq.gz", "fastq/DNA/{sample}_{unit}_R2.fastq.gz"]
     _temp_bwa_mem_output = "alignment/{sample}_{unit}.sort.bam"
     _bwa_log = "logs/map/bwa/{sample}_{unit}.log"
+    _bwa_benchmark = "benchmarks/bwa/mem/{sample}_{units}.tsv"
     _pu = "{sample}_{unit}"
 
 try:
@@ -84,16 +86,16 @@ rule bwa_mem:
     output:
         bam=temp(_temp_bwa_mem_output),
     log:
-        "logs/map/bwa/{sample}.log",
+        _bwa_log,
     params:
         index=config["reference"]["ref"],
-        extra=r"-R '@RG\tID:{sample}\tSM:{sample}\tPL:illumina\tPU:" + _pu + ' -v 1 " + config.get("bam_extra", ""),
+        extra=r"-R '@RG\tID:{sample}\tSM:{sample}\tPL:illumina\tPU:" + _pu + ' -v 1 ' + config.get("bam_extra", ""),
         sort="samtools",
         sort_order="coordinate",
         sort_extra="-@ 10",
     threads: 10
-    benchmark:
-        repeat("benchmarks/bwa/mem/{sample}.tsv", config.get("benchmark", {}).get("repeats", 1))
+    #benchmark:
+    #    repeat(_bwa_benchmark, config.get("benchmark", {}).get("repeats", 1))
     singularity:
         config["singularity"].get("bwa", config["singularity"].get("default", ""))
     wrapper:
@@ -107,13 +109,17 @@ rule finilize_alignment_process:
         _bwa_mem_output,
     singularity:
         config["singularity"].get("samtools", config["singularity"].get("default", ""))
-    run:
-        if len(snakemake.input) > 1:
-            shell("samtools merge -c -p {output} {input}")
-        else:
-            shell("mv {input} {output}")
+    shell:
+        """
+        if [[ ${{ArrayName[{input}]}} -gt 1 ]]
+        then
+            samtools merge -c -p {output} {input}
+        else
+            mv {input} {output}
+        fi
+        """
 
-# ToDo make it configurable 
+# ToDo make it configurable
 rule umi_tag:
     input:
         bam="alignment/{sample}.sort.noUMI.bam",

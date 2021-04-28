@@ -52,38 +52,40 @@ except:
     pass
 
 
-_fastp_trimming_input_reads = [
+_fastp_trimming_input_list = [
     _fastp_trimming_input + "/{sample}_R1.fastq.gz",
     _fastp_trimming_input + "/{sample}_R2.fastq.gz"
 ]
-_fastp_trimming_output = [
+_fastp_trimming_output_list = [
     _fastp_trimming_output + "/{sample}_R1.fastq.gz",
     _fastp_trimming_output + "/{sample}_R2.fastq.gz"
 ]
 _fastp_trimming_output_html = "fastq/DNA/{sample}.html"
 _fastp_trimming_output_json = "fastq/DNA/{sample}.json"
 _fastp_trimming_trimming_log = "logs/trimming/fastp/{sample}.log"
+_fastp_trimming_trimming_benchmark = "benchmarks/trimming/fastp/{sample}.tsv"
 
 if "units" in config:
     import src.lib.python.utils as utils
-    _fastp_trimming_input = [
-        _fastp_trimming_input + "/{sample}_{unit}_R1.fastq.gz"
+    _fastp_trimming_input_list = [
+        _fastp_trimming_input + "/{sample}_{unit}_R1.fastq.gz",
         _fastp_trimming_input + "/{sample}_{unit}_R2.fastq.gz"
     ]
-    _fastp_trimming_output = [
+    _fastp_trimming_output_list = [
         _fastp_trimming_output + "/{sample}_{unit}_R1.fastq.gz",
         _fastp_trimming_output + "/{sample}_{unit}_R2.fastq.gz"
     ]
     _fastp_trimming_output_html = "fastq/DNA/{sample}_{unit}.html"
     _fastp_trimming_output_json = "fastq/DNA/{sample}_{unit}.json"
     _fastp_trimming_trimming_log = "logs/trimming/fastp/{sample}_{unit}.log"
+    _fastp_trimming_trimming_benchmark = "benchmarks/trimming/fastp/{sample}_{unit}.tsv"
 
 
 rule fastp:
     input:
-        sample=_fastp_trimming_input,
+        sample=_fastp_trimming_input_list,
     output:
-        trimmed=_fastp_trimming_output,
+        trimmed=_fastp_trimming_output_list,
         html=_fastp_trimming_output_html,
         json=_fastp_trimming_output_json,
     params:
@@ -93,7 +95,7 @@ rule fastp:
         _fastp_trimming_trimming_log,
     threads: 5
     benchmark:
-        repeat("benchmarks/trimming/fastp/{sample}.tsv", config.get("benchmark", {}).get("repeats", 1))
+        repeat(_fastp_trimming_trimming_benchmark, config.get("benchmark", {}).get("repeats", 1))
     singularity:
         config["singularity"].get("fastp", config["singularity"].get("default", ""))
     wrapper:

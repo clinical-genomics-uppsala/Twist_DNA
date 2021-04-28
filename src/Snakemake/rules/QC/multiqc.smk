@@ -1,15 +1,17 @@
 
+sample_list = [s.Index  for s in samples.itertuples()]
+
 rule multiqcBatch:
     input:
-        qc1=expand("qc/{sample}/{sample}_R1_fastqc.zip", sample=config["DNA_Samples"]),
-        qc2=expand("qc/{sample}/{sample}_R2_fastqc.zip", sample=config["DNA_Samples"]),
-        qc3=expand("qc/{sample}/{sample}.samtools-stats.txt", sample=config["DNA_Samples"]),
-        qc4=expand("qc/{sample}/{sample}.HsMetrics.txt", sample=config["DNA_Samples"]),
-        qc5=expand("qc/{sample}/{sample}_batchStats.done", sample=config["DNA_Samples"]),  #Wait until all in table
+        qc1=expand("qc/{sample}/{sample}_R1_fastqc.zip", sample=sample_list),
+        qc2=expand("qc/{sample}/{sample}_R2_fastqc.zip", sample=sample_list),
+        qc3=expand("qc/{sample}/{sample}.samtools-stats.txt", sample=sample_list),
+        qc4=expand("qc/{sample}/{sample}.HsMetrics.txt", sample=sample_list),
+        qc5=expand("qc/{sample}/{sample}_batchStats.done", sample=sample_list),  #Wait until all in table
         qc6="qc/batchQC_stats_mqc.json",
-        #qc6 = expand("qc/{sample}/{sample}_avg_CV_genes_over_500X.txt", sample=config["DNA_Samples"]),
-        #qc7=expand("qc/{sample}/{sample}.gc_bias.summary_metrics.txt", sample=config["DNA_Samples"]),
-        qc7=expand("qc/{sample}/{sample}.duplication_metrics.txt", sample=config["DNA_Samples"]),
+        #qc6 = expand("qc/{sample}/{sample}_avg_CV_genes_over_500X.txt", sample=sample_list),
+        #qc7=expand("qc/{sample}/{sample}.gc_bias.summary_metrics.txt", sample=sample_list),
+        qc7=expand("qc/{sample}/{sample}.duplication_metrics.txt", sample=sample_list),
     output:
         "qc/MultiQC.html",
     params:

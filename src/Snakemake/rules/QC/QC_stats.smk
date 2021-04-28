@@ -1,6 +1,9 @@
+
+sample_list = [s.Index  for s in samples.itertuples()]
+
 rule touchBatch:
     input:
-        expand("Bam/DNA/{sample}-ready.bam", sample=config["DNA_Samples"]),
+        expand("Bam/DNA/{sample}-ready.bam", sample=sample_list),
     output:
         temp("qc/batchQC_stats_unsorted.csv"),
     log:
@@ -36,7 +39,7 @@ rule sortBatchStats:
     input:
         SampleSheetUsed=config["samplesheet"],
         batchUnsorted="qc/batchQC_stats_unsorted.csv",
-        batchDone=expand("qc/{sample}/{sample}_batchStats.done", sample=config["DNA_Samples"]),
+        batchDone=expand("qc/{sample}/{sample}_batchStats.done", sample=sample_list),
     output:
         batch="qc/batchQC_stats_mqc.json",
     log:

@@ -58,6 +58,8 @@ else:
         freebayes_input = "alignment/{sample}.dedup.{chr}.bam"
         vardict_input = "alignment/{sample}.dedup.{chr}.bam"
 
+        include: "../rules/Alignment/bam-split.smk"
+        include: "../rules/Alignment/bam-merge.smk"
         include: "../rules/Alignment/bwa-mem.smk"
         include: "../rules/Alignment/MarkDuplicates.smk"
 
@@ -75,11 +77,12 @@ else:
         vardict_input = "alignment/{sample}.dedup.{chr}.bam"
 
         include: "../rules/Alignment/bwa-mem.smk"
+        include: "../rules/Alignment/bam-split.smk"
+        include: "../rules/Alignment/bam-merge.smk"
         include: "../rules/Alignment/MarkDuplicatesUMI.smk"
 
 
-include: "../rules/Alignment/bam-split.smk"
-include: "../rules/Alignment/bam-merge.smk"
+
 include: "../rules/SNV/freebayes.smk"
 include: "../rules/SNV/mutect2.smk"
 include: "../rules/SNV/vardict_T.smk"
