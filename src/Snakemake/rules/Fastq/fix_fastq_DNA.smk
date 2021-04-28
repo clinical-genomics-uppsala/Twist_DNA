@@ -1,12 +1,12 @@
 
-_fix_fastq_dna_input = "fastq_temp/DNA/
+_fix_fastq_dna_input = "fastq_temp/DNA/"
 
 try:
     _fix_fastq_dna_input = fix_fastq_dna_input
 except:
     pass
 
-_fix_fastq_dna_output = "fastq_temp/DNA/
+_fix_fastq_dna_output = "fastq_temp/DNA/"
 
 try:
     _fix_fastq_dna_output = fix_fastq_dna_output
@@ -18,7 +18,7 @@ sample_number = dict(zip(samples.itertuples(), range(1,len(samples.itertuples())
 _fix_fastq_run_dna_input = lambda wildcards: _fix_fastq_dna_input + "/" + wildcards.sample + "_" + str(sample_number[wildcards.sample]) + "_" + wildcards.read + "_001.fastq.gz"
 _fix_fastq_run_dna_output = "fastq_temp/DNA/{sample}_R2.fastq.gz"
 if "units" in config:
-    _fix_fastq_run_dna_input = lambda wildcards: utils.get_fastq_file(units, wildcards.sample, wildcars.unit, "fq1") if wildcards.read == "read1" else utils.get_fastq_file(units, wildcards.sample, wildcars.unit, "fq2")"
+    _fix_fastq_run_dna_input = lambda wildcards: utils.get_fastq_file(units, wildcards.sample, wildcars.unit, "fq1") if wildcards.read == "read1" else utils.get_fastq_file(units, wildcards.sample, wildcars.unit, "fq2")
     _fix_fastq_run_dna_output = "fastq_temp/DNA/{sample}_{unit}_{re}.fastq.gz"
 
 
