@@ -46,7 +46,7 @@ def get_input():
     input_list.append(["Results/DNA/" + s.Index + "/MSI/" + s.Index + ".msi" for s in samples.itertuples()])
 
     '''Fusion/SV'''
-    input_list.append(["Results/DNA/" + s + "/geneFuse/fusions_" + s + ".txt"  for s in samples.itertuples()])
+    input_list.append(["Results/DNA/" + s.Index + "/geneFuse/fusions_" + s.Index + ".txt"  for s in samples.itertuples()])
 
     '''QC'''
     input_list.append(["Results/DNA/" + s.Index + "/QC/Low_coverage_positions.txt" for s in samples.itertuples()])
