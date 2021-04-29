@@ -9,6 +9,7 @@ RUN yum update -y && \
 
 
 RUN mkdir /Twist_DNA
+RUN mkdir /scratch
 
 WORKDIR /Twist_DNA
 
