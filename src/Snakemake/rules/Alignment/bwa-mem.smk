@@ -50,7 +50,7 @@ def get_now():
 
 def get_bam_files(wildcards):
     if "units" in config:
-        return ["alignment/" + wildcards.sample + "_" + unit+ ".sort.bam" for unit in utils.get_units(wildcars.sample)]
+        return ["alignment/" + wildcards.sample + "_" + unit+ ".sort.bam" for unit in utils.get_units(units, wildcards.sample)]
     else:
         ["alignment/{sample}.sort.bam"]
 
@@ -73,11 +73,23 @@ except:
 
 
 _bwa_mem_output = "alignment/{sample}.sort.bam"
-_umi_tag_output = "alignment/{sample}.sort.noUMI.bam",
 try:
     _bwa_mem_output = bwa_mem_output
 except:
     pass
+
+_umi_tag_input = "alignment/{sample}.sort.noUMI.bam"
+try:
+    _umi_tag_input = umi_tag_input
+except:
+    pass
+
+_umi_tag_output = "alignment/{sample}.sort.bam"
+try:
+    _umi_tag_output = umi_tag_output
+except:
+    pass
+
 
 
 rule bwa_mem:
@@ -109,9 +121,11 @@ rule finilize_alignment_process:
         _bwa_mem_output,
     singularity:
         config["singularity"].get("samtools", config["singularity"].get("default", ""))
+    params:
+        num_units=lambda wildcards: utils.get_num_units(units, wildcards.sample)
     shell:
         """
-        if [[ ${{ArrayName[{input}]}} -gt 1 ]]
+        if [[ {params.num_units} -gt 1 ]]
         then
             samtools merge -c -p {output} {input}
         else
@@ -119,13 +133,13 @@ rule finilize_alignment_process:
         fi
         """
 
-# ToDo make it configurable
+#ToDo make it configurable
 rule umi_tag:
     input:
-        bam="alignment/{sample}.sort.noUMI.bam",
-        bai="alignment/{sample}.sort.noUMI.bam.bai",
+        bam=_umi_tag_input,
+        bai=_umi_tag_input + ".bai",
     output:
-        bam="alignment/{sample}.sort.bam",
+        bam=_umi_tag_output,
     log:
         "logs/map/umi_tag/{sample}.log",
     container:

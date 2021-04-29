@@ -11,6 +11,8 @@ wildcard_constraints:
     sample="[^._]+",
     chr="chr[0-9XYM]+",
 
+sample_list = [s.Index  for s in samples.itertuples()]
+
 def get_input():
     input_list = []
     '''Demultiplexning'''
