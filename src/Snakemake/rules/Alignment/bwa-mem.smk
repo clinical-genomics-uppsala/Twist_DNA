@@ -129,7 +129,7 @@ rule finilize_alignment_process:
         then
             samtools merge -c -p {output} {input}
         else
-            mv {input} {output}
+            cp {input} {output}
         fi
         """
 

@@ -20,4 +20,4 @@ singularity:
 mutect_vcf_filter: "--max-alt-allele-count 3 --max-events-in-region 8"
 
 bed:
-    bedfile: "files/manifest.bed" #Change to twist DNA with HG38 coordiantes
+    bedfile: "/Twist_DNA/tests/workflow_dry_run/twist_dna/files/manifest.bed" #Change to twist DNA with HG38 coordiantes

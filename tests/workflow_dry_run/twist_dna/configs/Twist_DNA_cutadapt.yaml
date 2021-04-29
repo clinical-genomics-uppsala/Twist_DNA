@@ -10,18 +10,18 @@ reference: #change to hg38
     assembly: "hg19"
 
 PoN:
-    cnvkit: "DATA/cnvkit_Twist_PoN.cnn"
-    ONCOCNV: "DATA/ONCOCNV_Twist_PoN.txt"
-    ONCOCNV2: "DATA/ONCOCNV_Twist_PoN.Processed.txt"
-    GATK: "DATA/GATK_Twist_PoN.hdf5"
+    cnvkit: "/Twist_DNA/DATA/cnvkit_Twist_PoN.cnn"
+    ONCOCNV: "/Twist_DNA/DATA/ONCOCNV_Twist_PoN.txt"
+    ONCOCNV2: "/Twist_DNA/DATA/ONCOCNV_Twist_PoN.Processed.txt"
+    GATK: "/Twist_DNA/DATA/GATK_Twist_PoN.hdf5"
 
 bed:
-    bedfile: "files/manifest.bed" #Change to twist DNA with HG38 coordiantes
-    intervals: "files/manifest.interval_list"
-    GATK_CNV: "files/manifest.preprocessed.interval_list"
+    bedfile: "/Twist_DNA/tests/workflow_dry_run/twist_dna/files/manifest.bed" #Change to twist DNA with HG38 coordiantes
+    intervals: "/Twist_DNA/tests/workflow_dry_run/twist_dna/files/manifest.interval_list"
+    GATK_CNV: "/Twist_DNA/tests/workflow_dry_run/twist_dna/files/manifest.preprocessed.interval_list"
 
 geneFuse:
-    genes: "DATA/druggable.hg19.csv"
+    genes: "/Twist_DNA/DATA/druggable.hg19.csv"
 
 java:
     SOBDetector: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/SOBDetector_v1.0.1.jar"
