@@ -6,6 +6,8 @@ RUN yum update -y && \
     yum install -y singularity-runtime singularity mailx  && \
     yum install -y python38-devel python38-pip
 
+
+
 RUN mkdir /Twist_DNA
 
 WORKDIR /Twist_DNA
@@ -15,6 +17,7 @@ ADD ./ .
 USER root
 
 RUN ln -s /beegfs-storage/data /data
+RUN ln -s /beegfs-storage/projects /projects
 
 RUN cp -r tests/workflow_dry_run/gms_somatic /data_gms_somatic
 
