@@ -34,14 +34,14 @@ __license__ = "GPL3"
 import src.lib.python.utils as utils
 
 
-_cutadapt_trimming_input = "fastq_temp"
+_cutadapt_trimming_input = "fastq_temp/DNA"
 try:
     _cutadapt_trimming_input = cutadapt_trimming_input
 except:
     pass
 
 
-_cutadapt_trimming_output = "fastq/DNA/"
+_cutadapt_trimming_output = "fastq/DNA"
 try:
     _cutadapt_trimming_output = cutadapt_trimming_output
 except:
@@ -77,7 +77,7 @@ rule cutadapt:
         qc=_cutadapt_trimming_output_qc,
     params:
         # https://cutadapt.readthedocs.io/en/stable/guide.html#adapter-types
-        adapters=_adapters
+        adapters=_adapters,
         # https://cutadapt.readthedocs.io/en/stable/guide.html#
         extra=_extra,
     log:
