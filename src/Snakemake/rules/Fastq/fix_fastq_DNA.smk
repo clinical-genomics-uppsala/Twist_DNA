@@ -25,11 +25,11 @@ sample_number = dict(zip(sample_list, range(1,len(sample_list) + 1)))
 _fix_fastq_run_dna_input = lambda wildcards: _fix_fastq_dna_input + "/" + wildcards.sample + "_" + str(sample_number[wildcards.sample]) + "_" + wildcards.read + "_001.fastq.gz"
 _fix_fastq_run_dna_output = "fastq_temp/DNA/{sample}_R2.fastq.gz"
 if "units" in config:
-    _fix_fastq_run_dna_input = lambda wildcards: utils.get_fastq_file(units, wildcards.sample, wildcards.unit, "fq1" if wildcards.read == "read1" else "fq2")
+    _fix_fastq_run_dna_input = lambda wildcards: utils.get_fastq_file(units, wildcards.sample, wildcards.unit, "fq1" if wildcards.read == "R1" else "fq2")
     _fix_fastq_run_dna_output = "fastq_temp/DNA/{sample}_{unit}_{read}.fastq.gz"
 
 
-rule fix_fastq_run_DNA_R2:
+rule fix_fastq_run_dn:
     input:
         fastq=_fix_fastq_run_dna_input,
     output:

@@ -6,10 +6,11 @@ def fastq_files(wildcards):
     return [v[0] for k, v in units.loc[wildcards.sample].items()]
 
 
-fastp_trimming_input = lambda wildcards: fastq_files(wildcards)
+#fastp_trimming_input = lambda wildcards: fastq_files(wildcards)
+
 mutect2_output_vcf = "mutect2/{sample}.mutect2.fixAF.vcf"
 
-
+include: "../rules/Fastq/fix_fastq_DNA.smk"
 include: "../rules/Alignment/index_bam.smk"
 include: "../rules/Fastq/Fastp_trimming.smk"
 include: "../rules/Alignment/bwa-mem.smk"

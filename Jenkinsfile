@@ -20,7 +20,7 @@ pipeline {
     }
     stage('Small dataset') {
       steps {
-        // sh 'cd /data_gms_somatic && snakemake -j 1 -s /Twist_DNA/gms_somatic.smk --directory /data_gms_somatic --use-singularity --singularity-prefix /Twist_DNA --singularity-args  "--bind /beegfs-storage --bind /data --bind /Twist_DNA --bind /data_gms_somatic"'
+        // /sh 'cd /data_gms_somatic && snakemake -j 1 -s /Twist_DNA/gms_somatic.smk --directory /data_gms_somatic --use-singularity --singularity-prefix /Twist_DNA --singularity-args  "--bind /beegfs-storage --bind /data --bind /Twist_DNA --bind /data_gms_somatic"'
         sh 'snakemake -j 1 -s /Twist_DNA/Twist_DNA.smk --directory /data_twist_dna_markdup --use-singularity --singularity-prefix /Twist_DNA --singularity-args  "--bind /beegfs-storage --bind /data --bind /Twist_DNA --bind /data_gms_somatic"'
       }
     }
