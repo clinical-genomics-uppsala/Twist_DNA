@@ -35,4 +35,6 @@ rule fix_fastq_run_dn:
     output:
         fastq=_fix_fastq_run_dna_output,
     shell:
-        "zcat {input.fastq} | awk '{{if(/^@/){{split(\$0,a,\\\":\\\");gsub(\\\"+\\\",\\\"-\\\",a[8]);print(a[1]\\\":\\\"a[2]\\\":\\\"a[3]\\\":\\\"a[4]\\\":\\\"a[5]\\\":\\\"a[6]\\\":\\\"a[7]\\\":UMI_\\\"a[8]\\\":\\\"a[9]\\\":\\\"a[10]\\\":\\\"a[11])}}else{{print(\$0)}}}}' | gzip > {output.fastq}"
+        """
+            zcat {input.fastq} | awk '{{if(/^@/){{split($0,a,":");gsub("+","-",a[8]);print(a[1]":"a[2]":"a[3]":"a[4]":"a[5]":"a[6]":"a[7]":UMI_"a[8]":"a[9]":"a[10]":"a[11])}}else{{print($0)}}}}' | gzip > {output.fastq}
+        """    
