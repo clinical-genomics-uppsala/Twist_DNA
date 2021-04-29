@@ -36,14 +36,14 @@ __license__ = "GPL3"
 """
 
 
-_index_bam_input = "{folder_path}/{bam_file}.bam"
+_index_bam_input = "{folder_path}/{bam_file,[^/]+}.bam"
 try:
     _index_bam_input = index_bam_input
 except:
     pass
 
 
-_index_bam_output = "{folder_path}/{bam_file}.bam.bai"
+_index_bam_output = "{folder_path}/{bam_file,[^/]+}.bam.bai"
 try:
     _index_bam_output = index_bam_output
 except:

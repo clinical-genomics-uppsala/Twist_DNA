@@ -14,8 +14,9 @@ wildcard_constraints:
 def get_input():
     input_list = []
     '''Demultiplexning'''
-    input_list.append(["fastq/DNA/" + s + "_R1.fastq.gz" for s in sample_list])
-    input_list.append(["fastq/DNA/" + s + "_R2.fastq.gz" for s in sample_list])
+    if "units" not in config:
+        input_list.append(["fastq/DNA/" + s + "_R1.fastq.gz" for s in sample_list])
+        input_list.append(["fastq/DNA/" + s + "_R2.fastq.gz" for s in sample_list])
 
     '''Alignment'''
     input_list.append(["Bam/DNA/" + s + "-ready.bam.bai" for s in sample_list])
