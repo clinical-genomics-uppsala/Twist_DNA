@@ -39,7 +39,8 @@ rule indexNormalize:
         #tbi="{method}/{sample}.{method}.normalized.vcf.gz.tbi",
         tbi="recall/{sample}.ensemble.vcf.gz.tbi",
     log:
-        "logs/variantCalling/vt/{sample}.{method}.index.log",
+        #"logs/variantCalling/vt/{sample}.{method}.index.log",
+        "logs/variantCalling/vt/{sample}.vardict.index.log",
     singularity:
         config["singularity"].get("bcftools", config["singularity"].get("default", ""))
     shell:
