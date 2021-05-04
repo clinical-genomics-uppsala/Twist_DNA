@@ -1,4 +1,5 @@
 
+
 rule decompose:  #Do we need decompose as well, maybe for all but vardict??
     input:
         vcf="{method}/{sample}.{method}.okAF.vcf.gz",
@@ -15,13 +16,15 @@ rule decompose:  #Do we need decompose as well, maybe for all but vardict??
 
 rule normalizeAll:
     input:
-        vcf="{method}/{sample}.{method}.decomposed.vcf.gz",
+        # vcf="{method}/{sample}.{method}.decomposed.vcf.gz",
+        vcf="vardict/{sample}.vardict.decomposed.vcf.gz",
         ref=config["reference"]["ref"],
     output:
-        #"{method}/{sample}.{method}.normalized.vcf.gz",
+        # "{method}/{sample}.{method}.normalized.vcf.gz",
         "recall/{sample}.ensemble.vcf.gz",
     log:
-        "logs/variantCalling/vt/{sample}.{method}.normalized.log",
+        # "logs/variantCalling/vt/{sample}.{method}.normalized.log",
+        "logs/variantCalling/vt/{sample}.vardict.normalized.log",
     singularity:
         config["singularity"].get("vt", config["singularity"].get("default", ""))
     shell:
