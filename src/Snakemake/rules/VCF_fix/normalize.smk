@@ -18,7 +18,8 @@ rule normalizeAll:
         vcf="{method}/{sample}.{method}.decomposed.vcf.gz",
         ref=config["reference"]["ref"],
     output:
-        "{method}/{sample}.{method}.normalized.vcf.gz",
+        #"{method}/{sample}.{method}.normalized.vcf.gz",
+        "recall/{sample}.ensemble.vcf.gz",
     log:
         "logs/variantCalling/vt/{sample}.{method}.normalized.log",
     singularity:
@@ -29,9 +30,11 @@ rule normalizeAll:
 
 rule indexNormalize:
     input:
-        vcf="{method}/{sample}.{method}.normalized.vcf.gz",
+        #vcf="{method}/{sample}.{method}.normalized.vcf.gz",
+        vcf="recall/{sample}.ensemble.vcf.gz",
     output:
-        tbi="{method}/{sample}.{method}.normalized.vcf.gz.tbi",
+        #tbi="{method}/{sample}.{method}.normalized.vcf.gz.tbi",
+        tbi="recall/{sample}.ensemble.vcf.gz.tbi",
     log:
         "logs/variantCalling/vt/{sample}.{method}.index.log",
     singularity:
