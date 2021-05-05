@@ -17,8 +17,8 @@ PoN:
 
 bed:
     bedfile: "/Twist_DNA/DATA/pool1_pool2_nochr_3c.annotated_testing.bed" #Change to twist DNA with HG38 coordiantes
-    intervals: "Twist_DNA/DATA/pool1_pool2_nochr_3c.annotated_testing.interval_list"
-    GATK_CNV: "Twist_DNA/DATA/pool1_pool2_nochr_3c.annotated_testing.preprocessed.interval_list"
+    intervals: "/Twist_DNA/DATA/pool1_pool2_nochr_3c.annotated_testing.interval_list"
+    GATK_CNV: "/Twist_DNA/DATA/pool1_pool2_nochr_3c.annotated_testing.preprocessed.interval_list"
 
 geneFuse:
     genes: "/Twist_DNA/DATA/druggable.hg19.csv"
@@ -27,7 +27,7 @@ java:
     SOBDetector: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/SOBDetector_v1.0.1.jar"
 
 configfiles:
-    multiqc: "Config/Pipeline/multiqc_config.yaml"
+    multiqc: "/Twist_DNA/Config/Pipeline/multiqc_config.yaml"
     vep: "/data/ref_genomes/VEP/"
 
 #DNA_Samples:

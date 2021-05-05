@@ -1,2 +1,2 @@
 sample	unit	fq1	fq2
-sample1	L001	../../../DATA/HD827sonic_testing_R1.fastq.gz	../../../DATA/HD827sonic_testing_R2.fastq.gz
+sample1	L001	/Twist_DNA/DATA/HD827sonic_testing_R1.fastq.gz	/Twist_DNA/DATA/HD827sonic_testing_R2.fastq.gz
