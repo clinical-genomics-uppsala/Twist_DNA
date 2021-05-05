@@ -7,13 +7,17 @@ def fastq_files(wildcards):
 
 
 mutect2_output_vcf = "mutect2/{sample}.mutect2.fixAF.vcf"
-bam_split_input = _bwa_mem_output
 
 
 include: "../rules/Fastq/fix_fastq_DNA.smk"
 include: "../rules/Alignment/index_bam.smk"
 include: "../rules/Fastq/Fastp_trimming.smk"
 include: "../rules/Alignment/bwa-mem.smk"
+
+
+bam_split_input = _bwa_mem_output
+
+
 include: "../rules/Alignment/bam-split.smk"
 include: "../rules/Alignment/bam-merge.smk"
 include: "../rules/SNV/mutect2.smk"

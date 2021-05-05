@@ -5,6 +5,11 @@ programs:
     Trimming: "Cutadapt" #Cutadapt / Fastp / None
     markduplicate: "picard" #GPU / picard /picard_UMI
 
+callers:
+  - "mutect2"
+  - "vardict"
+  - "freebayes"
+
 reference: #change to hg38
     ref: "/beegfs-storage/hg19/bwa/BWA_0.7.10_refseq/hg19.with.mt.fasta"
     assembly: "hg19"

@@ -18,14 +18,14 @@ def get_now():
 _bwa_mem_fgbio1_input = ["fastq/DNA/{sample}_R1.fastq.gz", "fastq/DNA/{sample}_R2.fastq.gz"]
 _temp_bwa_mem_fgbio1_output = "alignment/{sample}.prep_fgbio.sort.bam"
 _bwa_men_fgbio1_log = "logs/map/bwa/{sample}.log"
-_bwa_benchmark_fgbio1 = "benchmarks/bwa/mem/{sample}.tsv"
+_bwa_mem_fgbio1_benchmark = "benchmarks/bwa/mem/{sample}.tsv"
 _pu = "{sample}"
 _prep_fgbio1_input = "alignment/{sample}.fgbio.sort.bam"
 if "units" in config:
     _bwa_mem_fgbio1_input = ["fastq/DNA/{sample}_{unit}_R1.fastq.gz", "fastq/DNA/{sample}_{unit}_R2.fastq.gz"]
     _temp_bwa_mem_fgbio1_output = "alignment/{sample}_{unit}.prep_fgbio.sort.bam"
     _bwa_men_fgbio1_log = "logs/map/bwa/{sample}_{unit}.log"
-    _bwa_mem_fgbio1_benchmark = "benchmarks/bwa/mem/{sample}_{units}.tsv"
+    _bwa_mem_fgbio1_benchmark = "benchmarks/bwa/mem/{sample}_{unit}.tsv"
     _pu = "{sample}_{unit}"
     _prep_fgbio1_input = "alignment/{sample}.merged.prep_fgbio.sort.bam"
 
@@ -50,7 +50,7 @@ rule bwa_mem_fgbio:
         sort_extra="-@ 10",
     threads: 10
     benchmark:
-        repeat(_bwa_benchmark, config.get("benchmark", {}).get("repeats", 1))
+        repeat(_bwa_mem_fgbio1_benchmark, config.get("benchmark", {}).get("repeats", 1))
     singularity:
         config["singularity"].get("bwa", config["singularity"].get("default", ""))
     wrapper:

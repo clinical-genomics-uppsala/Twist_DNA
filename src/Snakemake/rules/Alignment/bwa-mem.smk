@@ -66,7 +66,7 @@ if "units" in config:
     _bwa_mem_input = ["fastq/DNA/{sample}_{unit}_R1.fastq.gz", "fastq/DNA/{sample}_{unit}_R2.fastq.gz"]
     _temp_bwa_mem_output = "alignment/{sample}_{unit}.sort.bam"
     _bwa_log = "logs/map/bwa/{sample}_{unit}.log"
-    _bwa_benchmark = "benchmarks/bwa/mem/{sample}_{units}.tsv"
+    _bwa_benchmark = "benchmarks/bwa/mem/{sample}_{unit}.tsv"
     _pu = "{sample}_{unit}"
 
 try:
