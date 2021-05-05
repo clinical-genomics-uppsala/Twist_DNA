@@ -5,11 +5,12 @@ programs:
     markduplicate: "picard" #GPU / picard /picard_UMI
 
 callers:
-  - "mutect2"
-  - "vardict"
-  - "varscan"
-  - "freebayes"]
-
+  list:
+    - "mutect2"
+    - "vardict"
+    - "varscan"
+    - "freebayes"
+  sort_order: "mutect2,vardict,varscan,freebayes"
 
 reference: #change to hg38
     ref: "/data/ref_genomes/hg19/bwa/BWA_0.7.10_refseq/hg19.with.mt.fasta"

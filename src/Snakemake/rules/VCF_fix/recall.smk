@@ -6,7 +6,8 @@ localrules:
     createMultiVcf,
 
 
-methods = config["callers"]
+methods = config["callers"]["list"]
+sort_order = config["callers"]["sort_order"]
 
 
 rule recall:
@@ -18,7 +19,7 @@ rule recall:
         vcf=temp("recall/{sample}.unsorted.vcf.gz"),
     params:
         support="1",  #"{support}" ,
-        order="mutect2,vardict,varscan,freebayes",
+        order=sort_order,
     log:
         "logs/variantCalling/recall/{sample}.log",
     singularity:
