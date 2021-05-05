@@ -1,4 +1,5 @@
-sample_list = [s.Index  for s in samples.itertuples()]
+sample_list = [s.Index for s in samples.itertuples()]
+
 
 rule merge_Fastq_sh:
     output:

@@ -1,5 +1,13 @@
+# vim: syntax=python tabstop=4 expandtab
+# coding: utf-8
 
-sample_list = [s.Index  for s in samples.itertuples()]
+__author__ = "Jonas Almlöf, Patrik Smeds"
+__copyright__ = "Copyright 2021, Patrik Smeds, Jonas Almlöf"
+__email__ = "jonas.almlöf@scilifelab.uu.se, patrik.smeds@scilifelab.uu.se"
+__license__ = "GPL3"
+
+sample_list = [s.Index for s in samples.itertuples()]
+
 
 rule multiqcBatch:
     input:

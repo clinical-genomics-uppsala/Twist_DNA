@@ -33,30 +33,32 @@ except:
 _fastqc_input_r1 = _fastqc_input + "{sample}_R1.fastq.gz"
 _fastqc_input_r2 = _fastqc_input + "{sample}_R2.fastq.gz"
 
-#if "units" in config:
-#    import src.lib.python.utils as utils
-#    _fastqc_input_r1 = lambda wildcards: "fastq/DNA/" + wildcards.sample + "_R1.fastq.gz"
-#    _fastqc_input_r2 = lambda wildcards: "fastq/DNA/" + wildcards.sample + "_R2.fastq.gz"
+if "units" in config:
+    import src.lib.python.utils as utils
 
-
+    _fastqc_input_r1 = lambda wildcards: "fastq/DNA/" + wildcards.sample + "_R1.fastq.gz"
+    _fastqc_input_r2 = lambda wildcards: "fastq/DNA/" + wildcards.sample + "_R2.fastq.gz"
 
 
 rule fastqc_prep_fastq:
     input:
-        lambda wildcards: ["fastq/DNA/" + wildcards.sample + "_" + unit +"_" + wildcards.read + ".fastq.gz" for unit in utils.get_units(units, wildcards.sample)]
+        lambda wildcards: [
+            "fastq/DNA/" + wildcards.sample + "_" + unit + "_" + wildcards.read + ".fastq.gz"
+            for unit in utils.get_units(units, wildcards.sample)
+        ],
     output:
-        temp("fastq/DNA/{sample}_{read,[R12]+}.fastq.gz")
+        temp("fastq/DNA/{sample}_{read,[R12]+}.fastq.gz"),
     params:
-        num_units=lambda wildcards: utils.get_num_units(units, wildcards.sample)
+        num_units=lambda wildcards: utils.get_num_units(units, wildcards.sample),
     shell:
-         """
-         if [[ {params.num_units} -gt 1 ]]
-         then
-             zcat {input} | gzip > {output}
-         else
-             cp {input} {output}
-         fi
-         """
+        """
+        if [[ {params.num_units} -gt 1 ]]
+        then
+            zcat {input} | gzip > {output}
+        else
+            cp {input} {output}
+        fi
+        """
 
 
 rule fastqcR1:
@@ -73,8 +75,8 @@ rule fastqcR1:
     threads: 10
     container:
         config["singularity"].get("fastqc", config["singularity"].get("default", ""))
-     # wrapper:
-     #    "0.38.0/bio/fastqc"
+    # wrapper:
+    #    "0.38.0/bio/fastqc"
     shell:
         "(fastqc --quiet -t {threads} -d {params.tmp} --outdir {params.outdir} {input}) &> {log}"
 
@@ -93,7 +95,7 @@ rule fastqcR2:
     threads: 10
     container:
         config["singularity"].get("fastqc", config["singularity"].get("default", ""))
-     # wrapper:
-     #    "0.38.0/bio/fastqc"
+    # wrapper:
+    #    "0.38.0/bio/fastqc"
     shell:
         "(fastqc --quiet -t {threads} -d {params.tmp} --outdir {params.outdir} {input}) &> {log}"

@@ -50,8 +50,10 @@ def get_fastq_file(units, sample, unit, read_pair='fq1'):
         raise Exception("Multiple fastq files found")
     return units.loc[(sample, unit), [read_pair]].dropna()[0]
 
+
 def get_num_units(units, sample):
     return len(units.loc[sample].index.tolist())
+
 
 def get_units(units, sample):
     return units.loc[sample].index.tolist()

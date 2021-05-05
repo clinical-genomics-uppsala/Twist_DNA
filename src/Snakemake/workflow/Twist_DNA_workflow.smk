@@ -2,6 +2,7 @@ if "units" in config:
     units = pd.read_table(config["units"], index_col=["sample", "unit"], dtype=str)
     units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])  # enforce str in index
 
+
 include: "../rules/Alignment/index_bam.smk"
 
 
@@ -25,6 +26,8 @@ elif config["programs"]["Trimming"] == "Fastp":
 else:
 
     include: "../rules/Fastq/move_fastq.smk"
+
+
 # include: "../rules/CNV/ONCOCNV.smk"
 include: "../rules/CNV/cnvkit.smk"
 include: "../rules/CNV/GATK_CNV.smk"
@@ -76,7 +79,6 @@ else:
 
         include: "../rules/Alignment/bwa-mem.smk"
         include: "../rules/Alignment/MarkDuplicatesUMI.smk"
-
 
 
 include: "../rules/Alignment/bam-split.smk"

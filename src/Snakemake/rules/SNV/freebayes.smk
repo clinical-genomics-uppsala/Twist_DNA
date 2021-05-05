@@ -103,8 +103,7 @@ rule filter_iupac_codes:
 rule Merge_freebayes_vcf:
     input:
         calls=expand(
-            "freebayes/temp/{{sample}}.{chr}.unsort.filtered.mod.vcf",
-            chr=utils.extract_chr(config['reference']['ref'] + ".fai"),
+            "freebayes/temp/{{sample}}.{chr}.unsort.filtered.mod.vcf", chr=utils.extract_chr(config['reference']['ref'] + ".fai"),
         ),
     output:
         temp("freebayes/temp/{sample}.merged.SB.vcf"),

@@ -44,17 +44,19 @@ try:
 except:
     pass
 
-_move_fastq_input_r1 = _move_fastq_input + "/{sample}_R1.fastq.gz",
-_move_fastq_input_r2 = _move_fastq_input + "/{sample}_R2.fastq.gz",
+_move_fastq_input_r1 = _move_fastq_input + "/{sample}_R1.fastq.gz"
+_move_fastq_input_r2 = _move_fastq_input + "/{sample}_R2.fastq.gz"
 _move_fastq_output_r1 = _move_fastq_output + "/{sample}_R1.fastq.gz"
 _move_fastq_output_r2 = _move_fastq_output + "/{sample}_R2.fastq.gz"
 
 if "units" in config:
     import src.lib.python.utils as utils
+
     _move_fastq_input_r1 = lambda wildcards: utils.get_fastq_file(units, wildcards.sample, wildcars.unit, "fq1")
     _move_fastq_input_r2 = lambda wildcards: utils.get_fastq_file(units, wildcards.sample, wildcars.unit, "fq2")
     _move_fastq_output_r1 = _move_fastq_output + "/{sample}_{unit}_R1.fastq.gz"
     _move_fastq_output_r2 = _move_fastq_output + "/{sample}_{unit}_R2.fastq.gz"
+
 
 rule move_fastq:
     input:

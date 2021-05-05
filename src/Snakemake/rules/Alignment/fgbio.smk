@@ -1,11 +1,19 @@
+# vim: syntax=python tabstop=4 expandtab
+# coding: utf-8
 
+__author__ = "Patrik Smeds"
+__copyright__ = "Copyright 2021, Patrik Smeds, Jonas Almlöf"
+__email__ = "patrik.smeds@scilifelab.uu.se"
+__license__ = "MIT"
 
 import src.lib.python.utils as utils
+
 
 def get_now():
     from datetime import datetime
 
     return datetime.now().strftime("%Y%m%d")
+
 
 _bwa_mem_fgbio1_input = ["fastq/DNA/{sample}_R1.fastq.gz", "fastq/DNA/{sample}_R2.fastq.gz"]
 _temp_bwa_mem_fgbio1_output = "alignment/{sample}.prep_fgbio.sort.bam"
@@ -26,6 +34,7 @@ try:
 except:
     pass
 
+
 rule bwa_mem_fgbio:
     input:
         reads=_bwa_mem_fgbio1_input,
@@ -40,8 +49,8 @@ rule bwa_mem_fgbio:
         sort_order="coordinate",
         sort_extra="-@ 10",
     threads: 10
-    #benchmark:
-    #    repeat(_bwa_benchmark, config.get("benchmark", {}).get("repeats", 1))
+    benchmark:
+        repeat(_bwa_benchmark, config.get("benchmark", {}).get("repeats", 1))
     singularity:
         config["singularity"].get("bwa", config["singularity"].get("default", ""))
     wrapper:
@@ -50,7 +59,10 @@ rule bwa_mem_fgbio:
 
 rule merge_bam_for_fgbio:
     input:
-        lambda wildcards: ["alignment/" + wildcards.sample + "_" + unit+ ".prep_fgbio.sort.bam" for unit in utils.get_units(units, wildcards.sample)]
+        lambda wildcards: [
+            "alignment/" + wildcards.sample + "_" + unit + ".prep_fgbio.sort.bam"
+            for unit in utils.get_units(units, wildcards.sample)
+        ],
     output:
         temp("alignment/{sample}.merged.prep_fgbio.sort.bam"),
     singularity:

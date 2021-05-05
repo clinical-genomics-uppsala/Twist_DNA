@@ -47,12 +47,12 @@ try:
 except:
     pass
 
-_cutadapt_trimming_input_r1 = _cutadapt_trimming_input + "/{sample}_R1.fastq.gz",
-_cutadapt_trimming_input_r2 = _cutadapt_trimming_input + "/{sample}_R2.fastq.gz",
+_cutadapt_trimming_input_r1 = _cutadapt_trimming_input + "/{sample}_R1.fastq.gz"
+_cutadapt_trimming_input_r2 = _cutadapt_trimming_input + "/{sample}_R2.fastq.gz"
 _cutadapt_trimming_output_r1 = _cutadapt_trimming_output + "/{sample}_R1.fastq.gz"
 _cutadapt_trimming_output_r2 = _cutadapt_trimming_output + "/{sample}_R2.fastq.gz"
 _cutadapt_trimming_output_qc = _cutadapt_trimming_output + "/{sample}.qc.txt"
-_cutadapt_trimming_log = "logs/trimming/cutadapt/{sample}.log",
+_cutadapt_trimming_log = "logs/trimming/cutadapt/{sample}.log"
 
 if "units" in config:
     _cutadapt_trimming_input_r1 = _cutadapt_trimming_input + "/{sample}_{unit}_R1.fastq.gz"
@@ -63,8 +63,10 @@ if "units" in config:
     _cutadapt_trimming_log = "logs/trimming/cutadapt/{sample}.{unit}.log"
 
 
-_adapters = config.get("cutadapt",{}).get("adapters", "-a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT")
-_extra = config.get("cutadapt",{}).get("extra", "--minimum-length 2 -q 20")
+_adapters = config.get("cutadapt", {}).get(
+    "adapters", "-a AGATCGGAAGAGCACACGTCTGAACTCCAGTCA -A AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGT"
+)
+_extra = config.get("cutadapt", {}).get("extra", "--minimum-length 2 -q 20")
 
 
 rule cutadapt:

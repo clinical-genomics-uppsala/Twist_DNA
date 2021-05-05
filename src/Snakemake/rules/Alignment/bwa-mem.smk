@@ -43,16 +43,19 @@ Extra params to bwa-mem:
 """
 import src.lib.python.utils as utils
 
+
 def get_now():
     from datetime import datetime
 
     return datetime.now().strftime("%Y%m%d")
 
+
 def get_bam_files(wildcards):
     if "units" in config:
-        return ["alignment/" + wildcards.sample + "_" + unit+ ".sort.bam" for unit in utils.get_units(units, wildcards.sample)]
+        return ["alignment/" + wildcards.sample + "_" + unit + ".sort.bam" for unit in utils.get_units(units, wildcards.sample)]
     else:
         ["alignment/{sample}.sort.bam"]
+
 
 _bwa_mem_input = ["fastq/DNA/{sample}_R1.fastq.gz", "fastq/DNA/{sample}_R2.fastq.gz"]
 _temp_bwa_mem_output = "alignment/{sample}.sort.bam"
@@ -91,7 +94,6 @@ except:
     pass
 
 
-
 rule bwa_mem:
     input:
         reads=_bwa_mem_input,
@@ -106,8 +108,8 @@ rule bwa_mem:
         sort_order="coordinate",
         sort_extra="-@ 10",
     threads: 10
-    #benchmark:
-    #    repeat(_bwa_benchmark, config.get("benchmark", {}).get("repeats", 1))
+    benchmark:
+        repeat(_bwa_benchmark, config.get("benchmark", {}).get("repeats", 1))
     singularity:
         config["singularity"].get("bwa", config["singularity"].get("default", ""))
     wrapper:
@@ -122,7 +124,7 @@ rule finilize_alignment_process:
     singularity:
         config["singularity"].get("samtools", config["singularity"].get("default", ""))
     params:
-        num_units=lambda wildcards: utils.get_num_units(units, wildcards.sample)
+        num_units=lambda wildcards: utils.get_num_units(units, wildcards.sample),
     shell:
         """
         if [[ {params.num_units} -gt 1 ]]
@@ -133,7 +135,8 @@ rule finilize_alignment_process:
         fi
         """
 
-#ToDo make it configurable
+
+# ToDo make it configurable
 rule umi_tag:
     input:
         bam=_umi_tag_input,
