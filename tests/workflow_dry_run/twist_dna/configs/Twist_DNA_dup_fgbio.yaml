@@ -16,9 +16,9 @@ PoN:
     GATK: "/Twist_DNA/DATA/GATK_Twist_PoN.hdf5"
 
 bed:
-    bedfile: "/Twist_DNA/DATA/pool1_pool2_nochr_3c.sort.merged.hg19.210311.annotated.bed" #Change to twist DNA with HG38 coordiantes
-    intervals: "/Twist_DNA/DATA/pool1_pool2_nochr_3c.sort.merged.hg19.210311.annotated.interval_list"
-    GATK_CNV: "/Twist_DNA/DATA/pool1_pool2_nochr_3c.sort.merged.hg19.210311.annotated.preprocessed.interval_list"
+    bedfile: "/Twist_DNA/DATA/pool1_pool2_nochr_3c.annotated_testing.bed" #Change to twist DNA with HG38 coordiantes
+    intervals: "Twist_DNA/DATA/pool1_pool2_nochr_3c.annotated_testing.interval_list"
+    GATK_CNV: "Twist_DNA/DATA/pool1_pool2_nochr_3c.annotated_testing.preprocessed.interval_list"
 
 geneFuse:
     genes: "/Twist_DNA/DATA/druggable.hg19.csv"

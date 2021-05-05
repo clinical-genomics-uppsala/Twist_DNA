@@ -27,7 +27,7 @@ java:
     SOBDetector: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/SOBDetector_v1.0.1.jar"
 
 configfiles:
-    multiqc: "Config/Pipeline/multiqc_config.yaml"
+    multiqc: "/Twist_DNA/Config/Pipeline/multiqc_config.yaml"
     vep: "/data/ref_genomes/VEP/"
 
 #DNA_Samples:
