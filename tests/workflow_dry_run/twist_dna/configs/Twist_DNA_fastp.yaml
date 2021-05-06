@@ -27,6 +27,8 @@ bed:
     intervals: "/Twist_DNA/DATA/pool1_pool2_nochr_3c.annotated_testing.interval_list"
     GATK_CNV: "/Twist_DNA/DATA/pool1_pool2_nochr_3c.annotated_testing.preprocessed.interval_list"
 
+hotspot_combined: "/Twist_DNA/DATA/Hotspots_combined.csv"
+
 geneFuse:
     genes: "/Twist_DNA/DATA/druggable.hg19.csv"
 

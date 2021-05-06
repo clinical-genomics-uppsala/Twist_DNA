@@ -31,6 +31,8 @@ bed:
     intervals: "DATA/pool1_pool2_nochr_3c.sort.merged.padded.hg19.210311.annotated.interval_list"
     GATK_CNV: "DATA/pool1_pool2_nochr_3c.sort.merged.hg19.210311.annotated.preprocessed.interval_list"
 
+hotspot_combined: "DATA/Hotspots_combined.csv"
+
 geneFuse:
     genes: "DATA/druggable.hg19.csv"
 
