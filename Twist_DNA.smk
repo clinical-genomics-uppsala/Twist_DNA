@@ -25,7 +25,7 @@ def get_input():
 
     '''Callers'''
     input_list.append(["mutect2/" + s + ".mutect2.gvcf.gz" for s in sample_list])
-    for caller in config["callers"]["list"]::
+    for caller in config["callers"]["list"]:
         input_list.append([caller + "/" + s + "." + caller + ".normalized.vcf.gz.tbi" for s in sample_list])
     input_list.append(["vardict/" + s + ".vardict.normalized.vcf.gz.tbi" for s in sample_list])
     input_list.append(["recall/" + s + ".ensemble.vcf.gz" for s in sample_list])

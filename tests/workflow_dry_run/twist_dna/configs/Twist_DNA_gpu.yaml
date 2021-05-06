@@ -12,6 +12,9 @@ callers:
     - "freebayes"
   sort_order: "mutect2,vardict,freebayes"
 
+cnvkit:
+  extra: "--segment-method none"
+
 reference: #change to hg38
     ref: "/beegfs-storage/hg19/bwa/BWA_0.7.10_refseq/hg19.with.mt.fasta"
     assembly: "hg19"
