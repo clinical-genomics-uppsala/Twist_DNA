@@ -14,6 +14,8 @@ callers:
 
 cnvkit:
   extra: "--segment-method none"
+  purity: "/beegfs-storage/projects/wp1/nobackup/ngs/utveckling/analys/2021/Twist_DNA_GMS_run5_ds50M_20210315_GL/tests/workflow_dry_run/twist_dna/DATA/Pathological_purity_BMS_validation.txt"
+  relevant_genes: "/Twist_DNA/DATA/TSO500_relevant_genes.txt"
 
 reference: #change to hg38
     ref: "/beegfs-storage/hg19/bwa/BWA_0.7.10_refseq/hg19.with.mt.fasta"
