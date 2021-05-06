@@ -1,8 +1,15 @@
 
 import sys
 
-infile = open(sys.argv[1])
-outfile = open(sys.argv[2], "w")
+try:
+    infile = open(snakemake.input.vcf_ffpe)
+except:
+    infile = open(sys.argv[1])
+
+try:
+    outfile = open(snakemake.output.vcf_ffpe, "w")
+except:
+    outfile = open(sys.argv[2], "w")
 
 header = True
 for line in infile:

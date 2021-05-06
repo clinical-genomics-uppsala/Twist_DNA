@@ -18,15 +18,15 @@ rule vep:
         "(vep --vcf --no_stats -o {output.vcf} -i {input.vcf} --dir_cache {input.cache} --fork {threads} --cache --refseq --offline --fasta {input.fasta} {params} ) &> {log}"
 
 
-rule bgzipVep:
-    input:
-        "recall/{sample}.ensemble.vep.vcf",
-    output:
-        "recall/{sample}.ensemble.vep.vcf.gz",
-        "recall/{sample}.ensemble.vep.vcf.gz.tbi",
-    log:
-        "logs/recall/vep/{sample}.bgzip.log",
-    singularity:
-        config["singularity"].get("bcftools", config["singularity"].get("default", ""))
-    shell:
-        "(bgzip {input} && tabix {input}.gz) &> {log}"
+#rule bgzipVep:
+#    input:
+#        "recall/{sample}.ensemble.vep.vcf",
+#    output:
+#        "recall/{sample}.ensemble.vep.vcf.gz",
+#        "recall/{sample}.ensemble.vep.vcf.gz.tbi",
+#    log:
+#        "logs/recall/vep/{sample}.bgzip.log",
+#    singularity:
+#        config["singularity"].get("bcftools", config["singularity"].get("default", ""))
+#    shell:
+#        "(bgzip {input} && tabix {input}.gz) &> {log}"

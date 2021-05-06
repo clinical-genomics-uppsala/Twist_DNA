@@ -12,19 +12,19 @@ rule fixAF:
         "../../../scripts/python/fix_af.py"
 
 
-localrules:
-    bgzipCallers,
+#localrules:
+#    bgzipCallers,
 
 
-rule bgzipCallers:
-    input:
-        vcf="{method}/{sample}.{method}.okAF.vcf",
-    output:
-        vcf="{method}/{sample}.{method}.okAF.vcf.gz",
-        tabix="{method}/{sample}.{method}.okAF.vcf.gz.tbi",
-    log:
-        "logs/variantCalling/bgzip/{method}/{sample}.log",
-    singularity:
-        config["singularity"].get("bcftools", config["singularity"].get("default", ""))
-    shell:
-        "(bgzip {input.vcf} && tabix {output.vcf}) 2> {log}"
+#rule bgzipCallers:
+#    input:
+#        vcf="{method}/{sample}.{method}.okAF.vcf",
+#    output:
+#        vcf="{method}/{sample}.{method}.okAF.vcf.gz",
+#        tabix="{method}/{sample}.{method}.okAF.vcf.gz.tbi",
+#    log:
+#        "logs/variantCalling/bgzip/{method}/{sample}.log",
+#    singularity:
+#        config["singularity"].get("bcftools", config["singularity"].get("default", ""))
+#    shell:
+#        "(bgzip {input.vcf} && tabix {output.vcf}) 2> {log}"

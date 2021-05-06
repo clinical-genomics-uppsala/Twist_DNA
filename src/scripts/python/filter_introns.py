@@ -2,9 +2,20 @@
 import gzip
 import sys
 
-invcf = sys.argv[1]
-inbed = open(sys.argv[2])
-outvcf = open(sys.argv[3], "w")
+try:
+    invcf = snakemake.input.vcf
+except:
+    invcf = sys.argv[1]
+
+try:
+    inbed = open(snakemake.input.bed)
+except:
+    inbed = open(sys.argv[2])
+
+try:
+    outvcf = open(snakemake.output.vcf, "w")
+except:
+    outvcf = open(sys.argv[3], "w")
 
 
 # Add all regions annotated with Exons

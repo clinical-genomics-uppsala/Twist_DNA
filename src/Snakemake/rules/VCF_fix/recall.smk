@@ -17,6 +17,7 @@ rule recall:
         ref=config["reference"]["ref"],
     output:
         vcf=temp("recall/{sample}.unsorted.vcf.gz"),
+        tbi=temp("recall/{sample}.unsorted.vcf.gz.tbi"),
     params:
         support="1",  #"{support}" ,
         order=sort_order,
@@ -39,7 +40,7 @@ rule sort_recall:
     singularity:
         config["singularity"].get("bcftools", config["singularity"].get("default", ""))
     shell:
-        "(tabix {input} && bcftools sort -o {output.vcf} -O z {input} && tabix {output.vcf} ) &> {log}"
+        "(bcftools sort -o {output.vcf} -O z {input} && tabix {output.vcf} ) &> {log}"
 
 
 rule filter_recall:
