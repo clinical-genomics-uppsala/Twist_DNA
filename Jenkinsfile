@@ -18,12 +18,12 @@ pipeline {
         sh 'cp -r /data_demultiplex . && snakemake -n -s demultiplex.smk --directory /data_demultiplex/'
       }
     }
-    //stage('Small dataset gms somatic') {
-    //  steps {
-    //    sh 'snakemake -j 4 -s /Twist_DNA/gms_somatic.smk --directory /data_gms_somatic --use-singularity --singularity-prefix /Twist_DNA --singularity-args  "--bind /beegfs-storage  --bind /projects --bind /data --bind /Twist_DNA --bind /data_gms_somatic"'
+    stage('Small dataset gms somatic') {
+      steps {
+        sh 'snakemake -j 4 -s /Twist_DNA/gms_somatic.smk --directory /data_gms_somatic --use-singularity --singularity-prefix /Twist_DNA --singularity-args  "--bind /beegfs-storage  --bind /projects --bind /data --bind /Twist_DNA --bind /data_gms_somatic"'
         //sh 'snakemake -j 2 -s /Twist_DNA/Twist_DNA.smk --directory /data_twist_dna_gpu --use-singularity --singularity-prefix /Twist_DNA --singularity-args  "--bind /beegfs-storage  --bind /projects --bind /data --bind /Twist_DNA --bind /data_twist_dna_gpu"'
-    //  }
-    //}
+      }
+    }
     stage('Small dataset Twist DNA Markdup') {
       steps {
         sh 'snakemake -j 4 -s /Twist_DNA/Twist_DNA.smk --directory /data_twist_dna_markdup --use-singularity --singularity-prefix /Twist_DNA --singularity-args  "--bind /beegfs-storage  --bind /projects --bind /data --bind /Twist_DNA --bind /data_twist_dna_markdup"'

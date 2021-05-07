@@ -5,7 +5,7 @@ import os
 import subprocess
 
 
-cnv_purity = float(snakemake.input.purity)
+cnv_purity = snakemake.params.purity
 cnv_relevant_genes = open(snakemake.input.relevant_genes)
 cnvkit_files = snakemake.input.cnvkit_segments
 GATK_CNV_files = snakemake.input.GATK_CNV_segments
@@ -42,11 +42,13 @@ for line in cnv_bed_file:
 
 '''Pathological purity'''
 sample_purity_dict = {}
-for sample in samples:
-    purity = float(sample.TC)
+for row in cnv_purity:
+    column = row.split(";")
+    purity = float(column[1])
     if purity == 0:
         purity = 1.0
-    sample_purity_dict[sample.Index] = [0, 0, 0, purity]
+    sample_purity_dict[column[0] + "-ready"] = [0, 0, 0, purity]
+
 
 
 cnv_relevant_list = []
