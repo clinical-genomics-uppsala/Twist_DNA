@@ -64,7 +64,7 @@ singularity:
     #bwa_fgbio: "/projects/wp2/nobackup/Twist_Myeloid/Containers/bwa0.7.17-samtools-1.9.simg"
     cartool: "/projects/wp2/nobackup/Twist_Myeloid/Containers/CARTools-200206.simg"
     fastqc: "/projects/wp2/nobackup/Twist_Myeloid/Containers/fastqc0.11.8.simg"
-    fgbio: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/bedtools2.29.2_samtools1.9.0_fgbio1.3.0.simg"
+    fgbio: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/fgbio_0.2.1b-0.simg"
     umis: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/umis_1.0.7.simg"
     bamsormadup: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/biobambam2.0.50_bedtofastq.simg"
     bamtofastq: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/biobambam2.0.50_bedtofastq.simg"

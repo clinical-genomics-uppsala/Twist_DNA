@@ -94,7 +94,7 @@ rule prep_fgbio1:
         extra=r"-c 250 -M -R '@RG\tID:{sample}\tSM:{sample}\tPL:illumina\tPU:{sample}' -v 1",
     threads: 10
     shell:  # " | {params.bamsormadup_singularity} bamsormadup {params.tmp_dir} inputformat=sam threads={threads} outputformat=bam level=0 SO=coordinate"
-        "(  {params.samtools_singularity} samtools view -H {input.bam}"
+        "(  {params.samtools_singularity} samtools view -h {input.bam}"
         " | {params.bamsormadup_singularity} bamsormadup  inputformat=sam threads={threads} outputformat=bam level=0 SO=coordinate"
         " | {params.umis_singularity} umis bamtag -"
         " | {params.samtools_singularity} samtools view -b -o {output} - ) "
@@ -119,12 +119,11 @@ rule GroupReadsByUmi:
 rule fgbio:
     input:
         bam="alignment/{sample}.prep_fgbio.sort.groupreadsbyumi.bam",
-        bai="alignment/{sample}.prep_fgbio.sort.groupreadsbyumi.bam.bai",
+        #bai="alignment/{sample}.prep_fgbio.sort.groupreadsbyumi.bam.bai",
         ref=config["reference"]["ref"],
     output:
         fq1=temp("fastq_temp/{sample}-cumi-R1.fq.gz"),
         fq2=temp("fastq_temp/{sample}-cumi-R2.fq.gz"),
-        qc="qc/{sample}/{sample}_fgbio.txt",
     params:
         bam_tmp="alignment/{sample}-cumi-1-bamtofastq-tmp",
         fgbio_singularity=config["singularity"]["execute"] + config["singularity"]["fgbio"],
@@ -148,9 +147,9 @@ rule bwa_mem_fgbio2:
         "logs/fgbio/bwa2/{sample}.log",
     params:
         index=config["reference"]["ref"],
-        extra=r"-C -c 250 -M -R '@RG\tID:{sample}\tSM:{sample}\tPL:illumina\tPU:{sample}' -v 1",
+        extra=r"-C -c 250 -M -R '@RG\tID:{sample}\tSM:{sample}\tPL:illumina\tPU:{sample} -v 1'",
     threads: 10
     singularity:
         config["singularity"].get("bwa", config["singularity"].get("default", ""))
     shell:
-        "(bwa mem -t {threads} {params.extra} {params.index} {input.reads} | samtools sort -@ {threads} -m 3G -o {output} - ) &> {log}"
+        "(bwa mem -t {threads} {params.extra} {params.index} {input.reads} | samtools sort -@ {threads} -o {output} - ) &> {log}"
