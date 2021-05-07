@@ -26,8 +26,6 @@ elif config["programs"]["Trimming"] == "Fastp":
 else:
 
     include: "../rules/Fastq/move_fastq.smk"
-
-
 # include: "../rules/CNV/ONCOCNV.smk"
 include: "../rules/CNV/cnvkit.smk"
 include: "../rules/CNV/GATK_CNV.smk"
