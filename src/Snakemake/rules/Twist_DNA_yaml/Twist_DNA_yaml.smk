@@ -68,7 +68,19 @@ rule Create_Twist_DNA_yaml:
         for sample in DNA_sample_list:
             outfile.write("  " + sample[0] + ": \"S" + str(sample[1]) + "\"\n")
             outfile_samples.write("\n" + sample[0] + "\t" + str(sample[2]) + "\tNextSeq")
-            outfile_units.write("\n" + sample[0] + "\tL000\t" + sample[0] + "_S" + str(sample[1]) + "_R1_001.fastq.gz\t" + sample[0] + "_S" + str(sample[1]) + "_R2_001.fastq.gz")
+            outfile_units.write(
+                "\n"
+                + sample[0]
+                + "\tL000\t"
+                + sample[0]
+                + "_S"
+                + str(sample[1])
+                + "_R1_001.fastq.gz\t"
+                + sample[0]
+                + "_S"
+                + str(sample[1])
+                + "_R2_001.fastq.gz"
+            )
             outfile2.write(sample[0] + "-ready\t" + sample[2] + "\n")
 
         outfile.write("\n" + output.samples_tsv)

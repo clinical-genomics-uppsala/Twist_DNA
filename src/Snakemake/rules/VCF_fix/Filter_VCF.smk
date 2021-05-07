@@ -2,8 +2,8 @@ rule compress_and_index:
     input:
         vcf="{path}/{vcf_file}.vcf",
     output:
-        vcf="{path}/{vcf_file,[^/]+}.vcf.gz",  #+?<!.vcf}.vcf.gz",
-        tbi="{path}/{vcf_file,[^/]+}.vcf.gz.tbi", # +?<!.vcf}.vcf.gz.tbi",
+        vcf="{path}/{vcf_file,[^/]+}.vcf.gz",
+        tbi="{path}/{vcf_file,[^/]+}.vcf.gz.tbi",
     singularity:
         config["singularity"].get("default", "")
     shell:
@@ -52,13 +52,17 @@ rule ffpe_filter:
         java -jar {params.java} --input-type VCF --input-variants {input.vcf} --input-bam {input.bam} --output-variants {output.vcf}
         """
 
+
 rule annotate_vcf_with_ffpe:
     input:
         vcf_ffpe="Results/DNA/{sample}/vcf/{sample}.ensemble.vep.exon.soft_filter.ffpe.temp.vcf",
     output:
         vcf_ffpe=temp("Results/DNA/{sample}/vcf/{sample}.ensemble.vep.exon.soft_filter.ffpe.vcf"),
     script:
-        "../../../scripts/python/Add_FFPE_column_to_vcf.py"
+        """
+        ../../../scripts/python/Add_FFPE_column_to_vcf.py
+        """
+
 
 rule copy_vcf_to_result:
     input:

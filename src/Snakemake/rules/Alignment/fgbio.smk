@@ -81,6 +81,7 @@ rule prep_fgbio1:
     log:
         "logs/fgbio/bwa1/{sample}.log",
     params:
+        #tmp_dir="tmpfile=bam/{sample}",
         bwa_singularity=config["singularity"]["execute"] + config["singularity"].get(
             "bwa", config["singularity"].get("default", "")
         ),
@@ -91,27 +92,14 @@ rule prep_fgbio1:
         ),
         index=config["reference"]["ref"],
         extra=r"-c 250 -M -R '@RG\tID:{sample}\tSM:{sample}\tPL:illumina\tPU:{sample}' -v 1",
-        #tmp_dir="tmpfile=bam/{sample}",
     threads: 10
-    shell:
+    shell:  # " | {params.bamsormadup_singularity} bamsormadup {params.tmp_dir} inputformat=sam threads={threads} outputformat=bam level=0 SO=coordinate"
         "(  {params.samtools_singularity} samtools view -H {input.bam}"
-        #" | {params.bamsormadup_singularity} bamsormadup {params.tmp_dir} inputformat=sam threads={threads} outputformat=bam level=0 SO=coordinate"
         " | {params.bamsormadup_singularity} bamsormadup  inputformat=sam threads={threads} outputformat=bam level=0 SO=coordinate"
         " | {params.umis_singularity} umis bamtag -"
-        " | {params.samtools_singularity} samtools view -b -o {output} - ) &> {log}"
+        " | {params.samtools_singularity} samtools view -b -o {output} - ) "
+        "&> {log}"
 
-
-# rule samtools_index_fgbio1:
-#     input:
-#         "bam/{sample}-sort.bam",
-#     output:
-#         "bam/{sample}-sort.bam.bai",
-#     log:
-#         "logs/fgbio/samtools_index1/{sample}.log",
-#     singularity:
-#         config["singularity"]["samtools"]
-#     shell:
-#         "(samtools index {input} {output}) &> {log}"
 
 rule GroupReadsByUmi:
     input:

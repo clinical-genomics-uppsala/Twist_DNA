@@ -34,7 +34,7 @@ rule Call_cnv:
         segments=["CNV/cnvkit_calls/" + sample_id.Index + "-ready.cns" for sample_id in samples.itertuples()],
     params:
         outdir="CNV/cnvkit_calls/",
-        extra=config.get("cnvkit",{}).get("extra",""),
+        extra=config.get("cnvkit", {}).get("extra", ""),
     log:
         "logs/CNV_cnvkit/Call_cnv.log",
     threads: 8

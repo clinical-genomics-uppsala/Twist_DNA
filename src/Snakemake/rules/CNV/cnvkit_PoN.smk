@@ -44,7 +44,7 @@ rule Build_normal_reference:
     output:
         PoN="DATA/cnvkit.{design,[^.]+}.PoN.cnn",
     params:
-        extra=config.get("cnvkit",{}).get("extra",""
+        extra=config.get("cnvkit", {}).get("extra", ""),
     threads: 4
     singularity:
         config["singularity"].get("cnvkit", config["singularity"].get("default", ""))
