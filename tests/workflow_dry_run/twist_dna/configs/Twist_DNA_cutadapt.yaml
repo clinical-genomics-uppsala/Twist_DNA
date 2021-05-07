@@ -1,7 +1,7 @@
 ---
 
 programs:
-    Duplicates: "fgbio" #fgbio / markduplicates
+    Duplicates: "markduplicates" #fgbio / markduplicates
     Trimming: "Cutadapt" #Cutadapt / Fastp / None
     markduplicate: "picard" #GPU / picard /picard_UMI
 
@@ -57,7 +57,7 @@ bcl2fastq_version: 2.17.1.14
 
 singularity:
     default: "docker://gmsuppsala/somatic:develop"
-    execute: "singularity exec -B /data -B /projects -B /scratch "
+    execute: "singularity exec -B /beegfs-storage -B /data -B /projects -B /scratch -B /data_twist_dna_cutadapt "
     #multiqc: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/multiqc-1.9.simg"
     #samtools_fgbio: "/projects/wp2/nobackup/Twist_Myeloid/Containers/bwa0.7.17-samtools-1.9.simg"
     #picard: "/projects/wp2/nobackup/Twist_Myeloid/Containers/bwa0.7.17-samtools-1.9.simg"

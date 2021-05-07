@@ -44,7 +44,7 @@ rule bwa_mem_fgbio:
         _bwa_men_fgbio1_log,
     params:
         index=config["reference"]["ref"],
-        extra=r"-R '@RG\tID:{sample}\tSM:{sample}\tPL:illumina\tPU:" + _pu + ' -v 1 ' + config.get("bam_extra", ""),
+        extra=r"-R '@RG\tID:{sample}\tSM:{sample}\tPL:illumina\tPU:" + _pu + ' -v 1 ' + config.get("bam_extra", "") + "'",
         sort="samtools",
         sort_order="coordinate",
         sort_extra="-@ 10",
