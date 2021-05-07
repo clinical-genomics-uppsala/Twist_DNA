@@ -59,9 +59,8 @@ rule annotate_vcf_with_ffpe:
     output:
         vcf_ffpe=temp("Results/DNA/{sample}/vcf/{sample}.ensemble.vep.exon.soft_filter.ffpe.vcf"),
     script:
-        """
-        ../../../scripts/python/Add_FFPE_column_to_vcf.py
-        """
+        "../../../scripts/python/Add_FFPE_column_to_vcf.py"
+
 
 
 rule copy_vcf_to_result:
