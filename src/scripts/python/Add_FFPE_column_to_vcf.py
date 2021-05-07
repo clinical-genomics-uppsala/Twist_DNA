@@ -3,12 +3,12 @@ import sys
 
 try:
     infile = open(snakemake.input.vcf_ffpe)
-except:
+except NameError:
     infile = open(sys.argv[1])
 
 try:
     outfile = open(snakemake.output.vcf_ffpe, "w")
-except:
+except NameError:
     outfile = open(sys.argv[2], "w")
 
 header = True

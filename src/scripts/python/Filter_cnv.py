@@ -3,7 +3,10 @@ import glob
 import gzip
 import os
 import subprocess
+import logging
 
+if len(snakemake.log) > 0:
+    logging.basicConfig(filename=snakemake.log[0], level=logging.INFO)
 
 cnv_purity = snakemake.params.purity
 cnv_relevant_genes = open(snakemake.input.relevant_genes)
@@ -50,7 +53,6 @@ for row in cnv_purity:
     sample_purity_dict[column[0] + "-ready"] = [0, 0, 0, purity]
 
 
-
 cnv_relevant_list = []
 '''Extract events from CNVkit'''
 for cnv_file_name in cnvkit_files:
@@ -93,8 +95,9 @@ for cnv_file_name in cnvkit_files:
             continue
         try:
             CR = float(lline[4])
-        except:
-            CR = 0
+        except ValueError:
+            logging.warning("Could not convert column 4 in row to float: " + line)
+            continue
         if CR >= 0.35 or CR < -0.25:
             if sample not in sample_purity_dict:
                 print("Error: sample %s not in tumor purity file" % sample)

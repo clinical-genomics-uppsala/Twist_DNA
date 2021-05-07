@@ -4,17 +4,17 @@ import sys
 
 try:
     invcf = snakemake.input.vcf
-except:
+except NameError:
     invcf = sys.argv[1]
 
 try:
     inbed = open(snakemake.input.bed)
-except:
+except NameError:
     inbed = open(sys.argv[2])
 
 try:
     outvcf = open(snakemake.output.vcf, "w")
-except:
+except NameError:
     outvcf = open(sys.argv[3], "w")
 
 
