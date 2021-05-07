@@ -147,5 +147,5 @@ rule umi_tag:
         "logs/map/umi_tag/{sample}.log",
     container:
         config["singularity"].get("python", config["singularity"].get("default", ""))
-    shell:
-        "python src/scripts/python/umi_annotate.py -i {input.bam} -o {output.bam}"
+    script:
+        "../../../umi_annotate.py"
