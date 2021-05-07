@@ -1,6 +1,6 @@
 ---
 
-samples: "sample.tsv"
+samples: "samples.tsv"
 
 units: "units.tsv"
 

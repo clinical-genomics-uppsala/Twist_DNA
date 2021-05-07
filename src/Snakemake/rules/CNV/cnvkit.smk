@@ -48,7 +48,7 @@ rule Filter_cnv:
     input:
         cnvkit_segments=["CNV/cnvkit_calls/" + sample_id.Index + "-ready.cns" for sample_id in samples.itertuples()],
         GATK_CNV_segments=["CNV/CNV_GATK/" + sample_id.Index + "_clean.modelFinal.seg" for sample_id in samples.itertuples()],
-        purity=config["cnvkit"]["purity"],
+        #purity=config["cnvkit"]["purity"],
         relevant_genes=config["cnvkit"]["relevant_genes"],
         bed_file="CNV/bed/cnvkit_manifest.target.bed",
     output:

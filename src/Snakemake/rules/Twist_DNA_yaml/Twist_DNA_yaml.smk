@@ -16,6 +16,8 @@ rule Create_Twist_DNA_yaml:
         config="Config/Pipeline/configdefaults201012.yaml",
     output:
         Twist_DNA_yaml="Twist_DNA.yaml",
+        samples_tsv="samples.tsv",
+        units_tsv="units.tsv",
         TC="DATA/Pathological_purity_BMS_validation.txt",
     run:
         import glob
@@ -54,13 +56,23 @@ rule Create_Twist_DNA_yaml:
                 DNA_sample_list.append([sample, i, TC])
                 i += 1
         outfile = open(output.Twist_DNA_yaml, "a")
-        outfile2 = open(output.TC, "w")
+        outfile_samples = open(output.samples_tsv, "w")
+        outfile_units = open(output.units_tsv, "w")
         outfile.write("runfolder_path: /projects/wp1/nobackup/ngs/klinik/INBOX/" + run_folder_name + "/\n")
         outfile.write("samplesheet: /projects/wp1/nobackup/ngs/klinik/INBOX/" + run_folder_name + "/" + sample_sheet_name + "\n")
         outfile.write("bcl2fastq_version: 2.17.1.14\n\n")
         outfile.write("DNA_Samples:\n")
+
+        outfile_samples.write("samples\tTC\tplatform")
+
         for sample in DNA_sample_list:
             outfile.write("  " + sample[0] + ": \"S" + str(sample[1]) + "\"\n")
+            outfile_samples.write("\n" + sample[0] + "\t" + str(sample[2]) + "\tNextSeq")
+            outfile_units.write("\n" + sample[0] + "\tL000\t" + sample[0] + "_S" + str(sample[1]) + "_R1_001.fastq.gz\t" + sample[0] + "_S" + str(sample[1]) + "_R2_001.fastq.gz")
             outfile2.write(sample[0] + "-ready\t" + sample[2] + "\n")
+
+        outfile.write("\n" + output.samples_tsv)
+        outfile.write("\n#" + output.units_tsv)
+
         outfile.close()
         outfile2.close()
