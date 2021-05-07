@@ -30,11 +30,11 @@ pipeline {
 
       }
     }
-    //stage('Small dataset Twist DNA fgbio') {
-    //  steps {
-    //    sh 'snakemake -j 4 -s /Twist_DNA/Twist_DNA.smk --directory /data_twist_dna_fgbio --use-singularity --singularity-prefix /Twist_DNA --singularity-args  "--bind /beegfs-storage  --bind /projects --bind /data --bind /Twist_DNA --bind /data_twist_dna_fgbio"'
-    //  }
-    //}
+    stage('Small dataset Twist DNA fgbio') {
+      steps {
+        sh 'snakemake -j 4 -s /Twist_DNA/Twist_DNA.smk --directory /data_twist_dna_fgbio --use-singularity --singularity-prefix /Twist_DNA --singularity-args  "--bind /beegfs-storage  --bind /projects --bind /data --bind /Twist_DNA --bind /data_twist_dna_fgbio"'
+      }
+    }
     stage('Small dataset Twist DNA cutadapt') {
       steps {
         sh 'snakemake -j 4 -s /Twist_DNA/Twist_DNA.smk --directory /data_twist_dna_cutadapt --use-singularity --singularity-prefix /Twist_DNA --singularity-args  "--bind /beegfs-storage  --bind /projects --bind /data --bind /Twist_DNA --bind /data_twist_dna_cutadapt"'

@@ -91,10 +91,12 @@ rule prep_fgbio1:
         ),
         index=config["reference"]["ref"],
         extra=r"-c 250 -M -R '@RG\tID:{sample}\tSM:{sample}\tPL:illumina\tPU:{sample}' -v 1",
-        tmp_dir="tmpfile=bam/{sample}",
+        #tmp_dir="tmpfile=bam/{sample}",
     threads: 10
     shell:
-        "({params.bamsormadup_singularity} bamsormadup {params.tmp_dir} inputformat=bam threads={threads} outputformat=bam level=0 SO=coordinate {input.bam}"
+        "(  {params.samtools_singularity} samtools view -H {input.bam}"
+        #" | {params.bamsormadup_singularity} bamsormadup {params.tmp_dir} inputformat=sam threads={threads} outputformat=bam level=0 SO=coordinate"
+        " | {params.bamsormadup_singularity} bamsormadup  inputformat=sam threads={threads} outputformat=bam level=0 SO=coordinate"
         " | {params.umis_singularity} umis bamtag -"
         " | {params.samtools_singularity} samtools view -b -o {output} - ) &> {log}"
 
@@ -111,10 +113,25 @@ rule prep_fgbio1:
 #     shell:
 #         "(samtools index {input} {output}) &> {log}"
 
+rule GroupReadsByUmi:
+    input:
+        bam="alignment/{sample}.prep_fgbio.sort.bam",
+    output:
+        bam=temp("alignment/{sample}.prep_fgbio.sort.groupreadsbyumi.bam"),
+        qc="qc/{sample}/{sample}_fgbio.txt",
+    params:
+        fgbio_singularity=config["singularity"]["execute"] + config["singularity"]["fgbio"],
+    log:
+        "logs/fgbio/{sample}.groupreadsbyumi.log",
+    shell:
+        "{params.fgbio_singularity} fgbio GroupReadsByUmi -i {input.bam} --edits=1 --min-map-q=1 -t RX -s adjacency -f {output.qc} -o {output.bam}"
+        " > {log}"
+
 
 rule fgbio:
     input:
-        bam="alignment/{sample}.prep_fgbio.sort.bam",
+        bam="alignment/{sample}.prep_fgbio.sort.groupreadsbyumi.bam",
+        bai="alignment/{sample}.prep_fgbio.sort.groupreadsbyumi.bam.bai",
         ref=config["reference"]["ref"],
     output:
         fq1=temp("fastq_temp/{sample}-cumi-R1.fq.gz"),
@@ -127,8 +144,7 @@ rule fgbio:
     log:
         "logs/fgbio/{sample}.log",
     shell:
-        "{params.fgbio_singularity} fgbio GroupReadsByUmi -i {input.bam} --edits=1 --min-map-q=1 -t RX -s adjacency -f {output.qc}"
-        " | {params.fgbio_singularity} fgbio CallMolecularConsensusReads -i /dev/stdin -o /dev/stdout"
+        "{params.fgbio_singularity} fgbio CallMolecularConsensusReads -i {input.bam} -o /dev/stdout"
         " --min-input-base-quality=2 --min-reads=1 --max-reads=100000 --output-per-base-tags=false --sort-order=:none:"
         " | {params.fgbio_singularity} fgbio FilterConsensusReads -i /dev/stdin -o /dev/stdout -r {input.ref} --min-reads=1 --min-base-quality=13"
         " | {params.bamtofastq_singularity} bamtofastq collate=1 tags=cD,cM,cE gz=1 T={params.bam_tmp} F={output.fq1} F2={output.fq2}"

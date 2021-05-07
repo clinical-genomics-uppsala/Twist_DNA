@@ -3,7 +3,7 @@
 programs:
     Duplicates: "markduplicates" #fgbio / markduplicates
     Trimming: "Fastp" #Cutadapt / Fastp / None
-    markduplicate: "picard" #GPU / picard /picard_UMI
+    markduplicate: "picard_UMI" #GPU / picard /picard_UMI
 
 callers:
   list:
