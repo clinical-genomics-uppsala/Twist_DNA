@@ -1,37 +1,55 @@
 ---
 
 programs:
-    Duplicates: "fgbio" #fgbio / markduplicates
+    Duplicates: "markduplicates" #fgbio / markduplicates
     Trimming: "Cutadapt" #Cutadapt / Fastp / None
     markduplicate: "picard" #GPU / picard /picard_UMI
+
+callers:
+  list:
+    - "mutect2"
+    - "vardict"
+    - "freebayes"
+  sort_order: "mutect2,vardict,freebayes"
+
+cnvkit:
+  extra: "--segment-method none"
+  purity: "/beegfs-storage/projects/wp1/nobackup/ngs/utveckling/analys/2021/Twist_DNA_GMS_run5_ds50M_20210315_GL/tests/workflow_dry_run/twist_dna/DATA/Pathological_purity_BMS_validation.txt"
+  relevant_genes: "/Twist_DNA/DATA/TSO500_relevant_genes.txt"
 
 reference: #change to hg38
     ref: "/beegfs-storage/hg19/bwa/BWA_0.7.10_refseq/hg19.with.mt.fasta"
     assembly: "hg19"
 
 PoN:
-    cnvkit: "DATA/cnvkit_Twist_PoN.cnn"
-    ONCOCNV: "DATA/ONCOCNV_Twist_PoN.txt"
-    ONCOCNV2: "DATA/ONCOCNV_Twist_PoN.Processed.txt"
-    GATK: "DATA/GATK_Twist_PoN.hdf5"
+    cnvkit: "/Twist_DNA/DATA/cnvkit.Twist_test.PoN.cnn"
+    ONCOCNV: "/Twist_DNA/DATA/ONCOCNV_Twist_PoN.txt"
+    ONCOCNV2: "/Twist_DNA/DATA/ONCOCNV_Twist_PoN.Processed.txt"
+    GATK: "/Twist_DNA/DATA/gatk4.Twist_test.readCountPoN.hdf5"
 
 bed:
-    bedfile: "files/manifest.bed" #Change to twist DNA with HG38 coordiantes
-    intervals: "files/manifest.interval_list"
-    GATK_CNV: "files/manifest.preprocessed.interval_list"
+    bedfile: "/Twist_DNA/DATA/pool1_pool2_nochr_3c.annotated_testing.bed" #Change to twist DNA with HG38 coordiantes
+    intervals: "/Twist_DNA/DATA/pool1_pool2_nochr_3c.annotated_testing.interval_list"
+    GATK_CNV: "/Twist_DNA/DATA/pool1_pool2_nochr_3c.annotated_testing.preprocessed.interval_list"
+
+hotspot_combined: "/Twist_DNA/DATA/Hotspots_combined.csv"
 
 geneFuse:
-    genes: "DATA/druggable.hg19.csv"
+    genes: "/Twist_DNA/DATA/druggable.hg19.csv"
 
 java:
     SOBDetector: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/SOBDetector_v1.0.1.jar"
 
 configfiles:
-    multiqc: "Config/Pipeline/multiqc_config.yaml"
+    multiqc: "/Twist_DNA/Config/Pipeline/multiqc_config.yaml"
     vep: "/data/ref_genomes/VEP/"
 
-DNA_Samples:
-  sample1: "S1"
+#DNA_Samples:
+#  sample1: "S1"
+
+samples: "samples.tsv"
+
+units: "units.tsv"
 
 runfolder_path: ./
 samplesheet:  samplesheet.csv
@@ -39,14 +57,14 @@ bcl2fastq_version: 2.17.1.14
 
 singularity:
     default: "docker://gmsuppsala/somatic:develop"
-    execute: "singularity exec -B /data -B /projects -B /scratch "
+    execute: "singularity exec -B /beegfs-storage -B /data -B /projects -B /scratch -B /data_twist_dna_cutadapt "
     #multiqc: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/multiqc-1.9.simg"
     #samtools_fgbio: "/projects/wp2/nobackup/Twist_Myeloid/Containers/bwa0.7.17-samtools-1.9.simg"
     #picard: "/projects/wp2/nobackup/Twist_Myeloid/Containers/bwa0.7.17-samtools-1.9.simg"
     #bwa_fgbio: "/projects/wp2/nobackup/Twist_Myeloid/Containers/bwa0.7.17-samtools-1.9.simg"
     cartool: "/projects/wp2/nobackup/Twist_Myeloid/Containers/CARTools-200206.simg"
     fastqc: "/projects/wp2/nobackup/Twist_Myeloid/Containers/fastqc0.11.8.simg"
-    fgbio: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/bedtools2.29.2_samtools1.9.0_fgbio1.3.0.simg"
+    fgbio: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/fgbio_0.2.1b-0.simg"
     umis: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/umis_1.0.7.simg"
     bamsormadup: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/biobambam2.0.50_bedtofastq.simg"
     bamtofastq: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/biobambam2.0.50_bedtofastq.simg"

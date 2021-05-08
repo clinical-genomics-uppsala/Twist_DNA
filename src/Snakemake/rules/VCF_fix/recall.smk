@@ -6,7 +6,8 @@ localrules:
     createMultiVcf,
 
 
-methods = ["mutect2", "vardict", "varscan", "freebayes"]
+methods = config["callers"]["list"]
+sort_order = config["callers"]["sort_order"]
 
 
 rule recall:
@@ -16,9 +17,10 @@ rule recall:
         ref=config["reference"]["ref"],
     output:
         vcf=temp("recall/{sample}.unsorted.vcf.gz"),
+        tbi=temp("recall/{sample}.unsorted.vcf.gz.tbi"),
     params:
         support="1",  #"{support}" ,
-        order="mutect2,vardict,varscan,freebayes",
+        order=sort_order,
     log:
         "logs/variantCalling/recall/{sample}.log",
     singularity:
@@ -38,7 +40,7 @@ rule sort_recall:
     singularity:
         config["singularity"].get("bcftools", config["singularity"].get("default", ""))
     shell:
-        "(tabix {input} && bcftools sort -o {output.vcf} -O z {input} && tabix {output.vcf} ) &> {log}"
+        "(bcftools sort -o {output.vcf} -O z {input} && tabix {output.vcf} ) &> {log}"
 
 
 rule filter_recall:

@@ -44,21 +44,21 @@ except:
     pass
 
 
-samples = utils.generate_sample_list_from_samplesheet(config['samplesheet'])
+sample_dict = utils.generate_sample_list_from_samplesheet(config['samplesheet'])
 
 if config.get('lanes', None) is not None:
     fastq1_files = []
-    for sample in samples:
+    for sample in sample_dict:
         for lane in config['lanes']:
             fastq1_files.append(
                 "".join(
                     [
                         _demultiplex_output,
                         "/",
-                        samples[sample]['projectpath'],
+                        sample_dict[sample]['projectpath'],
                         sample,
                         "_S",
-                        str(samples[sample]['counter']),
+                        str(sample_dict[sample]['counter']),
                         "_",
                         lane,
                         "_R1_001.fastq.gz",
@@ -66,17 +66,17 @@ if config.get('lanes', None) is not None:
                 )
             )
     fastq2_files = []
-    for sample in samples:
+    for sample in sample_dict:
         for lane in config['lanes']:
             fastq2_files.append(
                 "".join(
                     [
                         _demultiplex_output,
                         "/",
-                        samples[sample]['projectpath'],
+                        sample_dict[sample]['projectpath'],
                         sample,
                         "_S",
-                        str(samples[sample]['counter']),
+                        str(sample_dict[sample]['counter']),
                         "_",
                         lane,
                         "_R2_001.fastq.gz",
@@ -85,31 +85,31 @@ if config.get('lanes', None) is not None:
             )
 else:
     fastq1_files = []
-    for sample in samples:
+    for sample in sample_dict:
         fastq1_files.append(
             "".join(
                 [
                     _demultiplex_output,
                     "/",
-                    samples[sample]['projectpath'],
+                    sample_dict[sample]['projectpath'],
                     sample,
                     "_S",
-                    str(samples[sample]['counter']),
+                    str(sample_dict[sample]['counter']),
                     "_R1_001.fastq.gz",
                 ]
             )
         )
     fastq2_files = []
-    for sample in samples:
+    for sample in sample_dict:
         fastq2_files.append(
             "".join(
                 [
                     _demultiplex_output,
                     "/",
-                    samples[sample]['projectpath'],
+                    sample_dict[sample]['projectpath'],
                     sample,
                     "_S",
-                    str(samples[sample]['counter']),
+                    str(sample_dict[sample]['counter']),
                     "_R2_001.fastq.gz",
                 ]
             )

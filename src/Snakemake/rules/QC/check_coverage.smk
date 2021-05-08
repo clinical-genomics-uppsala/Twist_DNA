@@ -4,7 +4,7 @@ rule check_DNA_coverage:
     input:
         bam="Bam/DNA/{sample}-ready.bam",
         bai="Bam/DNA/{sample}-ready.bam.bai",
-        bed="DATA/Hotspots_combined.csv",
+        bed=config["hotspot_combined"],
     output:
         coverage="Results/DNA/{sample}/QC/Low_coverage_positions.txt",
         coverage2="Results/DNA/{sample}/QC/All_coverage_positions.txt",

@@ -3,9 +3,12 @@ import glob
 import gzip
 import os
 import subprocess
+import logging
 
+if len(snakemake.log) > 0:
+    logging.basicConfig(filename=snakemake.log[0], level=logging.INFO)
 
-cnv_purity = open(snakemake.input.purity)
+cnv_purity = snakemake.params.purity
 cnv_relevant_genes = open(snakemake.input.relevant_genes)
 cnvkit_files = snakemake.input.cnvkit_segments
 GATK_CNV_files = snakemake.input.GATK_CNV_segments
@@ -42,14 +45,12 @@ for line in cnv_bed_file:
 
 '''Pathological purity'''
 sample_purity_dict = {}
-for line in cnv_purity:
-    lline = line.strip().split("\t")
-    sample = lline[0]
-    purity = float(lline[1])
+for row in cnv_purity:
+    column = row.split(";")
+    purity = float(column[1])
     if purity == 0:
         purity = 1.0
-    sample_purity_dict[sample] = [0, 0, 0, purity]
-cnv_purity.close()
+    sample_purity_dict[column[0] + "-ready"] = [0, 0, 0, purity]
 
 
 cnv_relevant_list = []
@@ -92,7 +93,11 @@ for cnv_file_name in cnvkit_files:
                     genes[gene] = [region]
         if not relevant_gene:
             continue
-        CR = float(lline[4])
+        try:
+            CR = float(lline[4])
+        except ValueError:
+            logging.warning("Could not convert column 4 in row to float: " + line)
+            continue
         if CR >= 0.35 or CR < -0.25:
             if sample not in sample_purity_dict:
                 print("Error: sample %s not in tumor purity file" % sample)
