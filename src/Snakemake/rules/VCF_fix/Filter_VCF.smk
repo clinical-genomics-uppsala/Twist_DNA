@@ -62,7 +62,6 @@ rule annotate_vcf_with_ffpe:
         "../../../scripts/python/Add_FFPE_column_to_vcf.py"
 
 
-
 rule copy_vcf_to_result:
     input:
         "recall/{sample}.{modifications}",
