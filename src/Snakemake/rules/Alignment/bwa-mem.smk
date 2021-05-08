@@ -148,4 +148,4 @@ rule umi_tag:
     container:
         config["singularity"].get("python", config["singularity"].get("default", ""))
     script:
-        "../../../umi_annotate.py"
+        "../../../scripts/python/umi_annotate.py"
