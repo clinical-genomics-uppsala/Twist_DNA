@@ -1,5 +1,5 @@
 # The build-stage image:
-FROM continuumio/miniconda3 AS build
+FROM continuumio/miniconda3  AS build
 
 RUN apt update && apt install procps -y
 # Install the package as normal:
@@ -26,9 +26,34 @@ FROM debian:buster-slim AS runtime
 
 ################## METADATA ######################
 
-LABEL bwa="0.7.17" samtools="1.9" python="3.8" bamtools="2.5.1" bcftools="1.11"
-LABEL freebayes="1.3.2" gatk4="4.1.9.0" vardict="1.8.2"
-LABEL snakemake-wrapper-utils="0.1.3" pysam="0.16.0" pandas="1.2.0"
+LABEL bamtools=2.5.1
+LABEL bcbio-variation-recall=0.2.6
+LABEL bcftools=1.11
+LABEL bedtools=2.29
+LABEL biobambam=2.0.87
+LABEL bwa=0.7.17
+LABEL cnvkit=0.9.8
+LABEL cutadapt=3.2
+LABEL fastqc=0.11.8
+LABEL fastp=0.20.1
+LABEL fgbio=1.3.0
+LABEL freebayes=1.3.2
+LABEL gatk4=4.1.9.0
+LABEL genefuse=0.6.1
+LABEL gridss=2.10.2
+LABEL multiqc=1.9
+LABEL pandas=1.2.1
+LABEL parallel=20190522
+LABEL picard=2.25.0
+LABEL pysam=0.16.0.1
+LABEL python=3.7
+LABEL samtools=1.11
+LABEL sed=4.7
+LABEL snakemake-wrapper-utils=0.1.3
+LABEL umis=1.0.7
+LABEL vardict-java=1.8.2
+LABEL varscan=2.4.3-0
+LABEL vt=2015.11.10
 ################## MAINTAINER ######################
 MAINTAINER Patrik Smeds <patrik.smeds@scilifelab.uu.se>
 
@@ -42,9 +67,11 @@ MAINTAINER Patrik Smeds <patrik.smeds@scilifelab.uu.se>
 COPY --from=build /venv /usr/local
 COPY --from=build /bin/ps /bin
 COPY --from=build /lib/* /lib/
+
 RUN mkdir /venv
 RUN ln -s /usr/local/lib /venv/lib
 RUN ln -s /usr/local/bin /venv/bin
-
-
-SHELL ["/bin/bash", "-c"]
+RUN apt-get update && apt-get install libfreetype6 fontconfig fonts-dejavu -y && apt-get clean
+ENV FONTCONFIG_PATH="/etc/fonts"
+ENV FONTCONFIG_FILE="/etc/fonts/fonts.conf"
+#SHELL ["/bin/bash", "-c"]

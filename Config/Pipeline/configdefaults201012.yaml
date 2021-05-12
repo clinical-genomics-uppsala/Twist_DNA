@@ -27,8 +27,8 @@ configfiles:
     vep: "/data/ref_genomes/VEP/"
 
 bed:
-    bedfile: "DATA/pool1_pool2_nochr_3c.sort.merged.padded.hg19.210311.annotated.bed" #Change to HG38 coordiantes
-    intervals: "DATA/pool1_pool2_nochr_3c.sort.merged.padded.hg19.210311.annotated.interval_list"
+    bedfile: "DATA/pool1_pool2_nochr_3c.sort.merged.padded20.hg19.210311.met.annotated.bed" #Change to HG38 coordiantes
+    intervals: "DATA/pool1_pool2_nochr_3c.sort.merged.padded20.hg19.210311.met.annotated.interval_list"
     GATK_CNV: "DATA/pool1_pool2_nochr_3c.sort.merged.hg19.210311.annotated.preprocessed.interval_list"
 
 hotspot_combined: "DATA/Hotspots_combined.csv"
