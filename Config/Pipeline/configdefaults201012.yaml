@@ -23,6 +23,7 @@ bed:
     bedfile: "DATA/pool1_pool2_nochr_3c.sort.merged.padded20.hg19.210311.met.annotated.bed" #Change to HG38 coordiantes
     intervals: "DATA/pool1_pool2_nochr_3c.sort.merged.padded20.hg19.210311.met.annotated.interval_list"
     GATK_CNV: "DATA/pool1_pool2_nochr_3c.sort.merged.hg19.210311.annotated.preprocessed.interval_list"
+    GATK_CNV_SNPs: "DATA/gnomad_SNP_0.001_target.annotated.interval_list"
 
 geneFuse:
     genes: "DATA/druggable.hg19.csv"

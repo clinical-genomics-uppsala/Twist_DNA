@@ -40,7 +40,7 @@ rule denoiseReadCounts:
 
 rule collectAllelicCounts:
     input:
-        intervalList=config["bed"]["GATK_CNV"],
+        intervalList=config["bed"]["GATK_CNV_SNPs"],
         bam="Bam/DNA/{sample}-ready.bam",
         bai="Bam/DNA/{sample}-ready.bam.bai",
         ref=config["reference"]["ref"],
