@@ -44,6 +44,19 @@ rule Call_cnv:
         "(cnvkit.py batch {input.bams} {params.extra} -r {input.PoN} -p {threads} -d {params.outdir}) &> {log}"
 
 
+rule Call_LoH:
+    input:
+        segment="CNV/cnvkit_calls/{sample}-ready.cns,
+        vcf="Results/DNA/{sample}/vcf/PVAL-65.ensemble.vep.exon.soft_filter.multibp.vcf",
+    output:
+        segment="CNV/cnvkit_calls/{sample}-LoH.cns,
+    params:
+        purity="0.8"
+
+
+    cnvkit.py call Sample.cns -v Sample.vcf -o Sample.call.cns -v Sample.vcf --purity XX
+
+
 rule Filter_cnv:
     input:
         cnvkit_segments=["CNV/cnvkit_calls/" + sample_id + "-ready.cns" for sample_id in config["DNA_Samples"]],
