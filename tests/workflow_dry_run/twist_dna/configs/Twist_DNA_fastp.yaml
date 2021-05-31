@@ -91,6 +91,6 @@ singularity:
     gatk4_cnv: "/singularity/gatk-4.1.9.0.simg" #"docker://broadinstitute/gatk:4.1.9.0"
     msisensor2: "/singularity/msisensor2_mgi-0.1.simg" #"docker://rjmashl/msisensor2_mgi:0.1" #https://hub.docker.com/r/hsun9/msisensor2
     vep: "/singularity/ensembl-vep-release_99.0.simg" #"docker://ensemblorg/ensembl-vep:release_99.0"
-    execute: "singularity exec -B /data -B /projects -B /scratch -B /data_twist_dna_cutadapt -B /Twist_DNA "
+    execute: "singularity exec -B /beegfs-storage -B /data -B /projects -B /scratch -B /data_twist_dna_cutadapt -B /Twist_DNA "
 
 mutect_vcf_filter: "--max-alt-allele-count 3 --max-events-in-region 8"
