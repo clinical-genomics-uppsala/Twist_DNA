@@ -1,0 +1,13 @@
+reference:
+  assembly: "hg19"
+  url: "https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.fa.gz"
+  md5sum: 806c02398f5ac5da8ffd6da2d1d5d1a9
+
+vep:
+  species: "homo_sapiens"
+  build: "GRCh37"
+  release: "99"
+
+singularity:
+    default: "docker://gmsuppsala/somatic:develop"
+    vep: "docker://ensemblorg/ensembl-vep:release_99.0"
