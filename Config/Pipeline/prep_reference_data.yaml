@@ -10,4 +10,4 @@ vep:
 
 singularity:
     default: "docker://gmsuppsala/somatic:develop"
-    vep: "docker://ensemblorg/ensembl-vep:release_99.0"
+    vep: "docker://ensemblorg/ensembl-vep:release_101.0"

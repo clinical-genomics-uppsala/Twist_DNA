@@ -9,6 +9,6 @@ rule get_vep_cache:
     log:
         "logs/vep/cache.log"
     container:
-        config["singularity"]["vep"]
+        config["singularity"].get("vep", config["singularity"].get("default", ""))
     wrapper:
         "v0.75.0/bio/vep/cache"
