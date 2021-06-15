@@ -1,0 +1,7 @@
+name: gms_somatic
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+   - bwa=0.7.17
+   - ensembl-vep=101

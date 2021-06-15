@@ -4,8 +4,10 @@ rule fetch_reference_genome:
         temp("reference/{build}/{genome}.fastq.gz")
     params:
         url=config['reference']['url'],
+    log:
+        "logs/wget/{genome}-{build}.fastq.gz.log"
     shell:
-        "wget {params.url} -o {output}"
+        "wget {params.url} -O {output} &> {log}"
 
 rule extract_reference_genome:
     input:
@@ -25,7 +27,7 @@ rule prep_bwa_index:
         "reference/{build}/{genome}.pac",
         "reference/{build}/{genome}.sa",
     params:
-        prefix="{genome}",
+        prefix="reference/{build}/{genome}",
         algorithm=config['reference'].get('algorithm','bwtsw'),
     container:
         config["singularity"].get("bwa", config["singularity"].get("default", ""))
