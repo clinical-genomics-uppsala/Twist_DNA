@@ -4,12 +4,12 @@
 
 configfile: "config.yaml"
 
-#wildcard_constraints:
-#    genome="[^\]+"
+wildcard_constraints:
+    genome="[^\.]+"
 
 rule all:
     input:
-        ["reference/" + config['reference']['assembly'] + "/hg19." + file for file in ["fastq", "amb", "ann", "bwt", "pac", "sa"]] + \
+        ["reference/" + config['reference']['assembly'] + "/hg19." + file for file in ["fasta", "amb", "ann", "bwt", "pac", "sa", "fai", "fasta.fai", "dict"]] + \
         [directory("reference/vep/cache")]
 
 
