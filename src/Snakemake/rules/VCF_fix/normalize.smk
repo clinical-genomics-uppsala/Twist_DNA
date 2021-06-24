@@ -27,7 +27,7 @@ rule normalizeAll:
         "(vt normalize -n -r {input.ref} -o {output} {input.vcf} ) &> {log}"
 
 
-#rule indexNormalize:
+# rule indexNormalize:
 #    input:
 #        vcf="{method}/{sample}.{method}.normalized.vcf.gz",
 #    output:

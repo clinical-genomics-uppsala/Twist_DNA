@@ -56,7 +56,7 @@ rule filter_recall:
         "../../../scripts/python/filter_recall.py"
 
 
-#rule index_filterRecall:
+# rule index_filterRecall:
 #    input:
 #        "recall/{sample}.ensemble.vcf.gz",
 #    output:
@@ -67,8 +67,6 @@ rule filter_recall:
 #        config["singularity"].get("bcftools", config["singularity"].get("default", ""))
 #    shell:
 #        "(tabix {input}) &> {log}"
-
-
 # # ##Add in multiallelic Variants
 # rule createMultiVcf: #Behovs denna?? Eller ar den onodig nu?
 #      input:

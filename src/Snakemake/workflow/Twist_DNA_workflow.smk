@@ -3,6 +3,7 @@ if "units" in config:
     units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])  # enforce str in index
 else:
     demultiplex_output = "fastq_temp"
+
     include: "../rules/Fastq/demultiplex.smk"
 
 
@@ -104,5 +105,6 @@ include: "../rules/QC/check_coverage.smk"
 include: "../rules/DNA_fusion/geneFuse.smk"
 include: "../rules/DNA_fusion/JuLI.smk"
 include: "../rules/TMB/TMB.smk"
+
 
 ruleorder: mutect2 > compress > index

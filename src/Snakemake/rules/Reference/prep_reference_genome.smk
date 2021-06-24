@@ -3,19 +3,20 @@ rule fetch_reference_genome:
     output:
         "reference/{species}/{assembly}/{genome}.fa",
         "reference/{species}/{assembly}/{genome}.fa.fai",
-        "reference/{species}/{assembly}/{genome}.dict"
+        "reference/{species}/{assembly}/{genome}.dict",
     params:
         region=config['reference']['region'],
         url=config['reference']['url'],
-        output="reference/{species}/{assembly}/"
+        output="reference/{species}/{assembly}/",
     log:
-        "logs/wget/{species}-{genome}-{assembly}.fasta.gz.log"
+        "logs/wget/{species}-{genome}-{assembly}.fasta.gz.log",
     container:
         config["singularity"].get("aws", config["singularity"].get("default", ""))
     shell:
         """
         aws s3 --no-sign-request --region {params.region} sync {params.url} {params.output}
         """
+
 
 rule genome_fai_link:
     input:
@@ -27,8 +28,9 @@ rule genome_fai_link:
         genome="{genome}",
     shell:
         """
-            cd {params.dir} && ln -s {params.genome}.fa.fai {params.genome}.fai
+        cd {params.dir} && ln -s {params.genome}.fa.fai {params.genome}.fai
         """
+
 
 rule prep_bwa_index:
     input:
@@ -41,11 +43,12 @@ rule prep_bwa_index:
         "reference/{species}/{assembly}/{genome}.sa",
     params:
         prefix="reference/{species}/{assembly}/{genome}",
-        algorithm=config['reference'].get('algorithm','bwtsw'),
+        algorithm=config['reference'].get('algorithm', 'bwtsw'),
     container:
         config["singularity"].get("bwa", config["singularity"].get("default", ""))
     wrapper:
         "v0.75.0/bio/bwa/index"
+
 
 rule genome_amb_link:
     input:
@@ -57,8 +60,9 @@ rule genome_amb_link:
         genome="{genome}",
     shell:
         """
-            cd {params.dir} && ln -s {params.genome}.amb {params.genome}.fa.amb
+        cd {params.dir} && ln -s {params.genome}.amb {params.genome}.fa.amb
         """
+
 
 rule genome_ann_link:
     input:
@@ -70,8 +74,9 @@ rule genome_ann_link:
         genome="{genome}",
     shell:
         """
-            cd {params.dir} && ln -s {params.genome}.ann {params.genome}.fa.ann
+        cd {params.dir} && ln -s {params.genome}.ann {params.genome}.fa.ann
         """
+
 
 rule genome_bwt_link:
     input:
@@ -83,8 +88,9 @@ rule genome_bwt_link:
         genome="{genome}",
     shell:
         """
-            cd {params.dir} && ln -s {params.genome}.bwt {params.genome}.fa.bwt
+        cd {params.dir} && ln -s {params.genome}.bwt {params.genome}.fa.bwt
         """
+
 
 rule genome_pac_link:
     input:
@@ -96,10 +102,11 @@ rule genome_pac_link:
         genome="{genome}",
     shell:
         """
-            cd {params.dir} && ln -s {params.genome}.pac {params.genome}.fa.pac
+        cd {params.dir} && ln -s {params.genome}.pac {params.genome}.fa.pac
         """
 
-rule genome_ann_link:
+
+rule genome_sa_link:
     input:
         "reference/{species}/{assembly}/{genome}.sa",
     output:
@@ -109,5 +116,5 @@ rule genome_ann_link:
         genome="{genome}",
     shell:
         """
-            cd {params.dir} && ln -s {params.genome}.sa {params.genome}.fa.sa
+        cd {params.dir} && ln -s {params.genome}.sa {params.genome}.fa.sa
         """

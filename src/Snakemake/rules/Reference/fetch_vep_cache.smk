@@ -1,13 +1,13 @@
 
 rule get_vep_cache:
     output:
-        directory("reference/vep/cache/" + config["vep"]["species"])
+        directory("reference/vep/cache/" + config["vep"]["species"]),
     params:
         species=config["vep"]["species"],
         build=config["vep"]["build"],
-        release=config["vep"]["release"]
+        release=config["vep"]["release"],
     log:
-        "logs/vep/cache.log"
+        "logs/vep/cache.log",
     container:
         config["singularity"].get("vep", config["singularity"].get("default", ""))
     wrapper:

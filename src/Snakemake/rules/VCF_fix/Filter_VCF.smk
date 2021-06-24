@@ -8,6 +8,7 @@ rule compress:
     shell:
         "bgzip {input.vcf}"
 
+
 rule index:
     input:
         vcf="{path}/{vcf_file}.vcf.gz",
@@ -16,7 +17,8 @@ rule index:
     container:
         config["singularity"].get("default", "")
     shell:
-        "&& tabix {input.vcf}"
+        "tabix {input.vcf}"
+
 
 rule intron_filter:
     input:

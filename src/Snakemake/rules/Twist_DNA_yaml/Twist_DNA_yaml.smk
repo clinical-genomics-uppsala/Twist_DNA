@@ -6,8 +6,7 @@ localrules:
 
 rule all:
     input:
-        Twist_DNA_yaml="Twist_DNA.yaml",
-        # TC="DATA/Pathological_purity_BMS_validation.txt",
+        Twist_DNA_yaml="Twist_DNA.yaml",  # TC="DATA/Pathological_purity_BMS_validation.txt",
 
 
 rule Create_Twist_DNA_yaml:
@@ -15,10 +14,10 @@ rule Create_Twist_DNA_yaml:
         run_info="RunParameters.xml",
         config="Config/Pipeline/configdefaults201012.yaml",
     output:
+        # TC="DATA/Pathological_purity_BMS_validation.txt",
         Twist_DNA_yaml="Twist_DNA.yaml",
         samples_tsv="samples.tsv",
         units_tsv="units.tsv",
-        # TC="DATA/Pathological_purity_BMS_validation.txt",
     run:
         import glob
         import os
