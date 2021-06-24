@@ -107,5 +107,5 @@ include: "../rules/DNA_fusion/JuLI.smk"
 include: "../rules/TMB/TMB.smk"
 include: "../rules/HRD/HRD_score.smk"
 
-    
+
 ruleorder: mutect2 > compress > index
