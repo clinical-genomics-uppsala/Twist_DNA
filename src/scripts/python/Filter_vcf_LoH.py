@@ -65,5 +65,5 @@ with gzip.open(in_vcf, 'rt') as f:
             VD = int(DATA[VD_index])
         DP = int(DATA[DP_index])
 
-        if (filter.find("PASS") != -1 and DP > 200 and AF >= 0.05 and AF <= 0.95 and GnomAD >= 0.001 and db1000G <= 0.001):
+        if (filter.find("PASS") != -1 and DP > 50 and AF >= 0.05 and AF <= 0.95 and (GnomAD >= 0.001 or db1000G >= 0.001)):
             out_vcf.write(line + "\n")

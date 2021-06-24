@@ -57,6 +57,9 @@ def get_input():
     '''TMB'''
     input_list.append(["Results/DNA/" + s + "/TMB/" + s + ".TMB.txt" for s in sample_list])
 
+    '''HRD'''
+    input_list.append(["Results/DNA/" + s + "/HRD/HRD_score.txt" for s in sample_list])
+
     '''QC'''
     input_list.append(["Results/DNA/" + s + "/QC/Low_coverage_positions.txt" for s in sample_list])
     input_list.append(["Results/DNA/" + s + "/QC/All_coverage_positions.txt" for s in sample_list])

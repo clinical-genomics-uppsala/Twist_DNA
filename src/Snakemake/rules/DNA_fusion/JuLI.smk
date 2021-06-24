@@ -8,8 +8,8 @@ rule JuLI_call:
         fusions="Results/DNA/{sample}/Fusions/JuLI/{sample}.txt",
     params:
         ref=config["reference"]["ref"],
-        Refgene="/references_JuLI/refGene_hg19.txt",
-        Gap="/references_JuLI/gap_hg19.txt",
+        Refgene="/references_JuLI/references/refGene_hg19.txt",
+        Gap="/references_JuLI/references/gap_hg19.txt",
         OutputPath="Results/DNA/{sample}/Fusions/JuLI",
         sample_name=lambda wildcards: wildcards.sample,
         MinMappingQuality='20',
@@ -50,10 +50,10 @@ rule JuLI_annotate:
         fusions="Results/DNA/{sample}/Fusions/JuLI/{sample}.filtered.annotated.txt",
     params:
         ref=config["reference"]["ref"],
-        Refgene="/references_JuLI/refGene_hg19.txt",
-        Cosmic="/references_JuLI/CosmicFusionExport_V76.tsv",
-        Pfam="/references_JuLI/Pfam-A.full.human",
-        Uniprot="/references_JuLI/HGNC_GeneName_UniProtID_160524.txt",
+        Refgene="/references_JuLI/references/refGene_hg19.txt",
+        Cosmic="/references_JuLI/references/CosmicFusionExport_V76.tsv",
+        Pfam="/references_JuLI/references/Pfam-A.full.human",
+        Uniprot="/references_JuLI/references/HGNC_GeneName_UniProtID_160524.txt",
     log:
         "logs/DNA_fusion/JuLI_annotate/{sample}.log",
     container:
@@ -65,5 +65,5 @@ rule JuLI_annotate:
         "Refgene=\"{params.Refgene}\", "
         "Cosmic=\"{params.Cosmic}\", "
         "Pfam=\"{params.Pfam}\", "
-        "Uniprot=\"{params.Uniprot}\") && "
-        "touch {output.fusions}')  &> {log}"
+        "Uniprot=\"{params.Uniprot}\")'"
+        " && touch {output.fusions}) &> {log}"
