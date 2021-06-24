@@ -26,3 +26,6 @@ include: "../rules/SNV/freebayes.smk"
 include: "../rules/VCF_fix/fix_AF_all_callers.smk"
 include: "../rules/VCF_fix/add_chr_to_header.smk"
 include: "../rules/VCF_fix/Filter_VCF.smk"
+
+
+ruleorder: mutect2 > compress > index
