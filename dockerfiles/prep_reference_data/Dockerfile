@@ -26,9 +26,13 @@ FROM debian:buster-slim AS runtime
 
 ################## METADATA ######################
 
-LABEL VERSION=0.0.1
+LABEL VERSION=0.0.2
 LABEL bwa=0.7.17
 LABEL ensembl-vep=101
+LABEL awscli=1.19.97
+LABEL picard=2.25.0
+LABEL snakemake-wrapper-utils=0.1.3
+
 ################## MAINTAINER ######################
 MAINTAINER Patrik Smeds <patrik.smeds@scilifelab.uu.se>
 

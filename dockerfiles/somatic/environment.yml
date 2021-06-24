@@ -2,6 +2,7 @@ name: gms_somatic
 channels:
   - bioconda
   - conda-forge
+  - defaults
 dependencies:
    - bamtools=2.5.1
    - bcbio-variation-recall=0.2.6

@@ -1,12 +1,19 @@
 reference:
   assembly: "hg19"
-  url: "https://hgdownload.soe.ucsc.edu/goldenPath/hg19/bigZips/hg19.fa.gz"
+  species: "homo_sapiens"
+  dict: "reference/homo_sapiens/hg19/genome.dict"
+  url: "hs3://ngi-igenomes/igenomes/Homo_sapiens/UCSC/hg19/Sequence/WholeGenomeFasta"
+  region: "eu-west-1"
   md5sum: 806c02398f5ac5da8ffd6da2d1d5d1a9
 
 vep:
   species: "homo_sapiens"
   build: "GRCh37"
   release: "99"
+
+bed:
+  bedfile: DATA/pool1_pool2_nochr_3c.sort.merged.hg19.210311.annotated.bed
+  interval_list: DATA/pool1_pool2_nochr_3c.sort.merged.hg19.210311.annotated.interval_list
 
 singularity:
     default: "docker://gmsuppsala/somatic:develop"

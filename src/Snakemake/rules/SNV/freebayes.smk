@@ -104,7 +104,7 @@ rule Merge_freebayes_vcf:
     input:
         calls=expand(
             "freebayes/temp/{{sample}}.{chr}.unsort.filtered.mod.vcf",
-            chr=utils.extract_chr(config['reference']['ref'] + ".fai"),
+            chr=utils.extract_chr(config['reference']['ref'] + ".fai", filter_out=config.get("skip_chrs", [])),
         ),
     output:
         temp("freebayes/temp/{sample}.merged.SB.vcf"),

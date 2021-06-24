@@ -27,14 +27,14 @@ rule normalizeAll:
         "(vt normalize -n -r {input.ref} -o {output} {input.vcf} ) &> {log}"
 
 
-rule indexNormalize:
-    input:
-        vcf="{method}/{sample}.{method}.normalized.vcf.gz",
-    output:
-        tbi="{method}/{sample}.{method}.normalized.vcf.gz.tbi",
-    log:
-        "logs/variantCalling/vt/{sample}.{method}.index.log",
-    container:
-        config["singularity"].get("bcftools", config["singularity"].get("default", ""))
-    shell:
-        "(tabix {input.vcf}) 2> {log}"
+#rule indexNormalize:
+#    input:
+#        vcf="{method}/{sample}.{method}.normalized.vcf.gz",
+#    output:
+#        tbi="{method}/{sample}.{method}.normalized.vcf.gz.tbi",
+#    log:
+#        "logs/variantCalling/vt/{sample}.{method}.index.log",
+#    container:
+#        config["singularity"].get("bcftools", config["singularity"].get("default", ""))
+#    shell:
+#        "(tabix {input.vcf}) 2> {log}"

@@ -143,7 +143,8 @@ rule merge_vcf_vardict:
 
 rule sortVardict:
     input:
-        "vardict/temp/{sample}.unsort.filtered.mod.vcf",
+        gz="vardict/temp/{sample}.unsort.filtered.mod.vcf.gz",
+        tbi="vardict/temp/{sample}.unsort.filtered.mod.vcf.gz.tbi",
     output:
         _vardict_output,
     container:
@@ -151,5 +152,4 @@ rule sortVardict:
     log:
         "logs/variantCalling/vardict/{sample}.sort.log",
     shell:
-        "(bgzip {input} && tabix {input}.gz && "
-        "bcftools sort -o {output} -O v {input}.gz) &> {log}"
+        "bcftools sort -o {output} -O v {input.gz} &> {log}"

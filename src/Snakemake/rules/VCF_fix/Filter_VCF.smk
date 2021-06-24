@@ -1,14 +1,22 @@
-rule compress_and_index:
+rule compress:
     input:
         vcf="{path}/{vcf_file}.vcf",
     output:
         vcf="{path}/{vcf_file,[^/]+}.vcf.gz",
+    container:
+        config["singularity"].get("default", "")
+    shell:
+        "bgzip {input.vcf}"
+
+rule index:
+    input:
+        vcf="{path}/{vcf_file}.vcf.gz",
+    output:
         tbi="{path}/{vcf_file,[^/]+}.vcf.gz.tbi",
     container:
         config["singularity"].get("default", "")
     shell:
-        "bgzip {input.vcf} && tabix {output.vcf}"
-
+        "&& tabix {input.vcf}"
 
 rule intron_filter:
     input:

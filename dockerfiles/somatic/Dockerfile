@@ -6,6 +6,8 @@ RUN apt update && apt install procps -y
 COPY environment.yml /
 RUN conda env create -f /environment.yml
 
+
+
 # Install conda-pack:
 RUN conda install -c conda-forge conda-pack
 
@@ -71,12 +73,11 @@ MAINTAINER Patrik Smeds <patrik.smeds@scilifelab.uu.se>
 # running the softwares without activating
 # any conda env
 
+RUN apt-get update && apt-get install libgfortran4 libgit2-dev libfreetype6 fontconfig fonts-dejavu -y && apt-get clean
 
 COPY --from=build /venv /usr/local
 COPY --from=build /bin/ps /bin
 COPY --from=build /lib/* /lib/
-
-RUN apt-get update && apt-get install libgit2-dev libfreetype6 fontconfig fonts-dejavu -y && apt-get clean
 
 RUN wget https://github.com/sgilab/JuLI/raw/master/JuLI-v0.1.6.1.zip
 RUN unzip JuLI-v0.1.6.1.zip

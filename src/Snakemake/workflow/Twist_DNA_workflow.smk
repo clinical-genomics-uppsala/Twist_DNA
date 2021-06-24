@@ -1,13 +1,12 @@
 if "units" in config:
     units = pd.read_table(config["units"], index_col=["sample", "unit"], dtype=str)
     units.index = units.index.set_levels([i.astype(str) for i in units.index.levels])  # enforce str in index
-
-
-demultiplex_output = "fastq_temp"
+else:
+    demultiplex_output = "fastq_temp"
+    include: "../rules/Fastq/demultiplex.smk"
 
 
 include: "../rules/Alignment/index_bam.smk"
-include: "../rules/Fastq/demultiplex.smk"
 
 
 if config.get("move_umi", True):
@@ -105,3 +104,5 @@ include: "../rules/QC/check_coverage.smk"
 include: "../rules/DNA_fusion/geneFuse.smk"
 include: "../rules/DNA_fusion/JuLI.smk"
 include: "../rules/TMB/TMB.smk"
+
+ruleorder: mutect2 > compress > index
