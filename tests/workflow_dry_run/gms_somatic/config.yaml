@@ -18,6 +18,9 @@ singularity:
     #msisensor2: "/singularity/msisensor2_mgi-0.1.simg" #"docker://rjmashl/msisensor2_mgi:0.1" #https://hub.docker.com/r/hsun9/msisensor2
     vep: "/singularity/ensembl-vep-release_99.0.simg" #"docker://ensemblorg/ensembl-vep:release_99.0"
 
+java:
+    SOBDetector: "/projects/wp4/nobackup/workspace/somatic_dev/singularity/SOBDetector_v1.0.1.jar"
+
 mutect_vcf_filter: "--max-alt-allele-count 3 --max-events-in-region 8"
 
 bed:
