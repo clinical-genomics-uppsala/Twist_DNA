@@ -1,4 +1,4 @@
-def extract_chr(file, filter_out=["chrM"]):
+def extract_chr(file, skip_chroms=["chrM"]):
     chr = None
     with open(file) as lines:
         chr = [line.split("\t")[0] for line in lines]
