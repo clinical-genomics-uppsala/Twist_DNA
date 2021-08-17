@@ -152,7 +152,7 @@ rule Merge_vcf:
     input:
         calls=expand(
             "mutect2/temp/{{sample}}.{chr}.mutect2.vcf.gz",
-            chr=utils.extract_chr(config['reference']['ref'] + ".fai", filter_out=config.get("skip_chrs", [])),
+            chr=utils.extract_chr(config['reference']['ref'] + ".fai", skip_chroms=config.get("skip_chrs", [])),
         ),
     output:
         temp("mutect2/temp/{sample}.mutect2.SB.vcf"),
@@ -168,7 +168,7 @@ rule Merge_gvcf:
     input:
         calls=expand(
             "mutect2/temp/{{sample}}.{chr}.mutect2.gvcf.gz",
-            chr=utils.extract_chr(config['reference']['ref'] + ".fai", filter_out=config.get("skip_chrs", [])),
+            chr=utils.extract_chr(config['reference']['ref'] + ".fai", skip_chroms=config.get("skip_chrs", [])),
         ),
     output:
         "mutect2/{sample}.mutect2.gvcf.gz",
@@ -211,7 +211,7 @@ rule merge_mutect_bam:
     input:
         expand(
             "mutect2/bam_temp2/{{sample}}-ready.{chr}.indel.bam",
-            chr=utils.extract_chr(config['reference']['ref'] + ".fai", filter_out=config.get("skip_chrs", [])),
+            chr=utils.extract_chr(config['reference']['ref'] + ".fai", skip_chroms=config.get("skip_chrs", [])),
         ),
     output:
         _mutect_output_bam,

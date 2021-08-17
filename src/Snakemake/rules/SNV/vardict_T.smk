@@ -129,7 +129,7 @@ rule merge_vcf_vardict:
     input:
         calls=expand(
             "vardict/temp/{{sample}}.{chr}.unsort.filtered.mod_iupac.dup_removed.chrAdded.vcf",
-            chr=utils.extract_chr(config['reference']['ref'] + ".fai", filter_out=config.get("skip_chrs", [])),
+            chr=utils.extract_chr(config['reference']['ref'] + ".fai", skip_chroms=config.get("skip_chrs", [])),
         ),
     output:
         temp("vardict/temp/{sample}.unsort.filtered.mod.vcf"),
