@@ -1,6 +1,9 @@
 
 vcf = open(snakemake.input.vcf)
 artifacts = open(snakemake.input.artifacts)
+background_panel_filename = snakemake.input.background_panel
+background_run = open(snakemake.input.background_run)
+gvcf = snakemake.input.gvcf
 output_tmb = open(snakemake.output.tmb, "w")
 
 
@@ -18,10 +21,37 @@ for line in artifacts:
     FFPE_SNV_artifacts[key] = observations
 
 
-nr_TMB = 0
+'''Background'''
+gvcf_panel_dict = {}
+gvcf_run_dict = {}
+if background_panel_filename != "":
+    background_panel = open(background_panel_filename)
+    next(background_panel)
+    for line in background_panel:
+        columns = line.strip().split()
+        chrom = columns[0]
+        pos = columns[1]
+        key = chrom + "_" + pos
+        median = float(columns[2])
+        sd = float(columns[3])
+        gvcf_panel_dict[key] = [median, sd]
+next(background_run)
+for line in background_run:
+    columns = line.strip().split()
+    chrom = columns[0]
+    pos = columns[1]
+    key = chrom + "_" + pos
+    median = float(columns[2])
+    gvcf_run_dict[key] = median
+
+
+nr_nsSNV_TMB = 0
+nr_sSNV_TMB = 0
 header = True
 prev_pos = ""
 prev_chrom = ""
+TMB_nsSNV = []
+TMB_sSNV = []
 for line in vcf:
     if header:
         if line[:6] == "#CHROM":
@@ -54,6 +84,10 @@ for line in vcf:
     AF = float(INFO_list[AF_index][3:])
     Callers = INFO_list[Caller_index]
     if Callers.find("vardict") == -1:
+        continue
+    if Callers.find("mutect2") == -1:
+        continue
+    if Callers.find("freebayes") == -1:
         continue
     VEP_INFO = INFO.split("CSQ=")[1]
     Variant_type = VEP_INFO.split("|")[1].split("&")
@@ -98,20 +132,45 @@ for line in vcf:
         continue
 
     # TMB
-    if (filter.find("PASS") != -1 and DP > 200 and VD > 20 and AF >= 0.05 and AF <= 0.35 and
+    if (filter.find("PASS") != -1 and DP > 200 and VD > 20 and AF >= 0.05 and AF <= 0.40 and
             GnomAD <= 0.0001 and db1000G <= 0.0001 and Observations <= 1 and INFO.find("MUC6") == -1 and
             INFO.find("Complex") == -1):
-        if ("missense_variant" in Variant_type or
-                "splice_region_variant" in Variant_type or
-                "splice_acceptor_variant" in Variant_type or
-                "stop_gained" in Variant_type or
-                # "frameshift_variant" in Variant_type or
-                # "protein_altering_variant" in Variant_type or
-                "splice_donor_variant" in Variant_type or
-                "stop_lost" in Variant_type):
-            if len(ref) == 1 and len(alt) == 1:
-                nr_TMB += 1
+        if len(ref) == 1 and len(alt) == 1:
+            panel_median = 1000
+            panel_sd = 1000
+            run_median = 1000
+            pos_sd = 1000
+            key2 = key[3:]
+            if key2 in gvcf_panel_dict:
+                panel_median = gvcf_panel_dict[key2][0]
+                panel_sd = gvcf_panel_dict[key2][1]
+            if key2 in gvcf_run_dict:
+                run_median = gvcf_run_dict[key2]
+            if panel_sd > 0.0:
+                pos_sd = (AF - panel_median) / panel_sd
+            if pos_sd > 5.0:
+                if ("missense_variant" in Variant_type or
+                        "stop_gained" in Variant_type or
+                        "stop_lost" in Variant_type):
+                    nr_nsSNV_TMB += 1
+                    TMB_nsSNV.append([line, panel_median, panel_sd, run_median, AF, pos_sd])
+                elif "synonymous_variant" in Variant_type:
+                    nr_sSNV_TMB += 1
+                    TMB_sSNV.append([line, panel_median, panel_sd, run_median, AF, pos_sd])
 
-TMB = nr_TMB * 0.78
-output_tmb.write("TMB:\t" + str(TMB) + "\n")
-output_tmb.write("Variants:\t" + str(nr_TMB) + "\n")
+nsTMB = nr_nsSNV_TMB * 1.0
+total_TMB = (nr_sSNV_TMB + nr_nsSNV_TMB) * 0.8
+output_tmb.write("nsSNV TMB:\t" + str(nsTMB) + "\n")
+output_tmb.write("nsSNV variants:\t" + str(nr_nsSNV_TMB) + "\n")
+output_tmb.write("TMB:\t" + str(total_TMB) + "\n")
+output_tmb.write("SNV in coding regions:\t" + str(nr_sSNV_TMB + nr_nsSNV_TMB) + "\nList of variants:\n")
+for TMB in TMB_nsSNV:
+    output_tmb.write(
+        TMB[0].strip() + "\t" + "{:.4f}".format(TMB[1]) + "\t" + "{:.4f}".format(TMB[2]) + "\t" + "{:.4f}".format(TMB[3]) +
+        "\t" + "{:.4f}".format(TMB[4]) + "\t" + "{:.2f}".format(TMB[5]) + "\n"
+    )
+for TMB in TMB_sSNV:
+    output_tmb.write(
+        TMB[0].strip() + "\t" + "{:.4f}".format(TMB[1]) + "\t" + "{:.4f}".format(TMB[2]) + "\t" + "{:.4f}".format(TMB[3]) +
+        "\t" + "{:.4f}".format(TMB[4]) + "\t" + "{:.2f}".format(TMB[5]) + "\n"
+    )

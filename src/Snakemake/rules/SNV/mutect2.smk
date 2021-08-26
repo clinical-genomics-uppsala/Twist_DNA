@@ -97,8 +97,9 @@ rule mutect2:
         stats=temp("mutect2/temp/{sample}.{chr}.mutect2.unfilt.vcf.gz.stats"),
         vcf=temp("mutect2/temp/{sample}.{chr}.mutect2.unfilt.vcf.gz"),
         vcf_tbi=temp("mutect2/temp/{sample}.{chr}.mutect2.unfilt.vcf.gz.tbi"),
+        f1r2=temp("mutect2/temp/{sample}.{chr}.mutect2.f1r2.tar.gz"),
     params:
-        extra="--intervals mutect2/bedfile.{chr}.bed ",
+        extra="--intervals mutect2/bedfile.{chr}.bed --f1r2-tar-gz mutect2/temp/{sample}.{chr}.mutect2.f1r2.tar.gz",
     threads: 1
     log:
         "logs/variantCalling/mutect2_{sample}.{chr}.log",
@@ -129,39 +130,127 @@ rule mutect2_gvcf:
         "0.72.0/bio/gatk/mutect"
 
 
-rule filterMutect2:
-    input:
-        vcf="mutect2/temp/{sample}.{chr}.mutect2.unfilt.vcf.gz",
-        vcf_tbi="mutect2/temp/{sample}.{chr}.mutect2.unfilt.vcf.gz.tbi",
-        stats="mutect2/temp/{sample}.{chr}.mutect2.unfilt.vcf.gz.stats",
-        fasta=config["reference"]["ref"],
-    output:
-        vcf=temp("mutect2/temp/{sample}.{chr}.mutect2.vcf.gz"),
-        vcf_tbi=temp("mutect2/temp/{sample}.{chr}.mutect2.vcf.gz.tbi"),
-    params:
-        extra=config.get("mutect_vcf_filter", ""),
-    log:
-        "logs/variantCalling/mutect2/filter_{sample}.{chr}.log",
-    container:
-        config["singularity"].get("mutect2", config["singularity"].get("default", ""))
-    shell:
-        "(gatk --java-options '-Xmx4g' FilterMutectCalls {params.extra} -R {input.fasta} -V {input.vcf} -O {output.vcf}) &> {log}"
-
-
 rule Merge_vcf:
     input:
         calls=expand(
-            "mutect2/temp/{{sample}}.{chr}.mutect2.vcf.gz",
-            chr=utils.extract_chr(config['reference']['ref'] + ".fai", skip_chroms=config.get("skip_chrs", [])),
+            "mutect2/temp/{{sample}}.{chr}.mutect2.unfilt.vcf.gz",
+            chr=utils.extract_chr(config['reference']['ref'] + ".fai"),
         ),
     output:
-        temp("mutect2/temp/{sample}.mutect2.SB.vcf"),
+        #temp("mutect2/temp/{sample}.mutect2.SB.vcf"),
+        "mutect2/temp/{sample}.mutect2.unfilt.vcf",
     log:
         "logs/variantCalling/mutect2/merge_vcf/{sample}.log",
     container:
         config["singularity"].get("bcftools", config["singularity"].get("default", ""))
     wrapper:
         "0.70.0/bio/bcftools/concat"
+
+
+rule Merge_stats:
+    input:
+        stats=expand(
+            "mutect2/temp/{{sample}}.{chr}.mutect2.unfilt.vcf.gz.stats",
+            chr=utils.extract_chr(config['reference']['ref'] + ".fai"),
+        ),
+    params:
+        stats=' '.join(
+            '-stats ' + v
+            for v in expand(
+                "mutect2/temp/{{sample}}.{chr}.mutect2.unfilt.vcf.gz.stats",
+                chr=utils.extract_chr(config['reference']['ref'] + ".fai"),
+            )
+        ),
+    output:
+        temp("mutect2/temp/{sample}.mutect2.unfilt.vcf.gz.stats"),
+    log:
+        "logs/variantCalling/mutect2/merge_stats/{sample}.log",
+    container:
+        config["singularity"].get("mutect2", config["singularity"].get("default", ""))
+    shell:
+        "(gatk MergeMutectStats {params.stats} -O {output}) > {log}"
+
+
+rule merge_LearnReadOrientationModel:
+    input:
+        f1r2=expand(
+            "mutect2/temp/{{sample}}.{chr}.mutect2.f1r2.tar.gz",
+            chr=utils.extract_chr(config['reference']['ref'] + ".fai"),
+        ),
+    output:
+        f1r2=temp("mutect2/temp/{sample}.mutect2.f1r2.tar.gz"),
+    log:
+        "logs/variantCalling/mutect2/merge_LearnReadOrientationModel/{sample}.log",
+    shell:
+        "(cat {input.f1r2} > {output.f1r2}) > {log}"
+
+
+rule LearnReadOrientationModel:
+    input:
+        "mutect2/temp/{sample}.mutect2.f1r2.tar.gz",
+    output:
+        temp("mutect2/temp/{sample}.mutect2.read-orientation-model.tar.gz"),
+    log:
+        "logs/variantCalling/mutect2/LearnReadOrientationModel/{sample}.log",
+    container:
+        config["singularity"].get("mutect2", config["singularity"].get("default", ""))
+    shell:
+        "(gatk LearnReadOrientationModel -I {input} -O {output}) > {log}"
+
+
+rule GetPileupSummaries:
+    input:
+        "Bam/DNA/{sample}-ready.bam",
+    params:
+        "DATA/chr17_small_exac_common_3.vcf.gz",
+    output:
+        temp("mutect2/temp/{sample}.mutect2.getpileupsummaries.table"),
+    log:
+        "logs/variantCalling/mutect2/GetPileupSummaries/{sample}.log",
+    container:
+        config["singularity"].get("mutect2", config["singularity"].get("default", ""))
+    shell:
+        "(gatk GetPileupSummaries -I {input} -V {params} -L {params} -O {output}) > {log}"
+
+
+rule CalculateContamination:
+    input:
+        "mutect2/temp/{sample}.mutect2.getpileupsummaries.table",
+    output:
+        segments=temp("mutect2/temp/{sample}.mutect2.tumor_segmentation.table"),
+        contamination=temp("mutect2/temp/{sample}.mutect2.contamination.table"),
+    log:
+        "logs/variantCalling/mutect2/CalculateContamination/{sample}.log",
+    container:
+        config["singularity"].get("mutect2", config["singularity"].get("default", ""))
+    shell:
+        "(gatk CalculateContamination -I {input} -tumor-segmentation {output.segments} -O {output.contamination}) > {log}"
+
+
+rule filterMutect2:
+    input:
+        vcf="mutect2/temp/{sample}.mutect2.unfilt.vcf.gz",
+        vcf_tbi="mutect2/temp/{sample}.mutect2.unfilt.vcf.gz.tbi",
+        stats="mutect2/temp/{sample}.mutect2.unfilt.vcf.gz.stats",
+        segments="mutect2/temp/{sample}.mutect2.tumor_segmentation.table",
+        contamination="mutect2/temp/{sample}.mutect2.contamination.table",
+        ob_prior="mutect2/temp/{sample}.mutect2.read-orientation-model.tar.gz",
+        fasta=config["reference"]["ref"],
+    output:
+        vcf=temp("mutect2/temp/{sample}.mutect2.SB.vcf"),
+        #vcf_tbi=temp("mutect2/temp/{sample}.mutect2.SB.vcf.gz.tbi"),
+        #vcf=temp("mutect2/temp/{sample}.{chr}.mutect2.vcf.gz"),
+        #vcf_tbi=temp("mutect2/temp/{sample}.{chr}.mutect2.vcf.gz.tbi"),
+    params:
+        extra=config.get("mutect_vcf_filter", ""),
+    log:
+        "logs/variantCalling/mutect2/filter_{sample}.log",
+    container:
+        config["singularity"].get("mutect2", config["singularity"].get("default", ""))
+    shell:
+        "(gatk --java-options '-Xmx4g' FilterMutectCalls {params.extra} -R {input.fasta} -V {input.vcf} "
+        "--tumor-segmentation {input.segments} --contamination-table {input.contamination} --ob-priors {input.ob_prior} "
+        "-O {output.vcf}) &> {log}"
 
 
 rule Merge_gvcf:

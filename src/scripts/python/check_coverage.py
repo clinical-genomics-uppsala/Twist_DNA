@@ -1,15 +1,20 @@
 
 import subprocess
 import sys
+import gzip
 
 bed = open(snakemake.input.bed)
 vcf = open(snakemake.input.vcf)
 bam_file = snakemake.input.bam
+background_panel_filename = snakemake.input.background_panel
+background_run = open(snakemake.input.background_run)
+gvcf = snakemake.input.gvcf
 outfile = open(snakemake.output.coverage, "w")
 outfile2 = open(snakemake.output.coverage2, "w")
 
-header = "#Chr\tStart_hg19\tEnd_hg19\tGene\tCDS_mut_syntax\tAA_mut_syntax\tReport"
-header += "\tcomment\tExon\tAccession_number\tCoverage\tPosition\tDP\tRef_DP\tAlt_DP\tAF\tAA_change\tCDS_change\n"
+header = "#Chr\tStart_hg19\tEnd_hg19\tGene\tCDS_mut_syntax\tAA_mut_syntax\tReport\tcomment\tExon\tAccession_number"
+header += "\tpanel_median\tpanel_sd\trun_median\talt_AF\tSD_from_median"
+header += "\tCoverage\tPosition\tDP\tRef_DP\tAlt_DP\tAF\tAA_change\tCDS_change\n"
 
 outfile.write(header)
 outfile2.write(header)
@@ -19,6 +24,7 @@ outfile2.write(header)
 inv_pos = {}
 gene_regions = []
 gene_region_dict = {}
+hotspot_dict = {}
 header = True
 prev_gene = ""
 prev_chrom = ""
@@ -40,6 +46,8 @@ for line in bed:
     pos = int(start_pos)
     while pos <= int(end_pos):
         inv_pos[chrom + "_" + str(pos)] = lline
+        if Report == "hotspot" or Report == "region_all":
+            hotspot_dict[chrom + "_" + str(pos)] = ""
         pos += 1
     if first_gene:
         prev_gene = gene
@@ -57,6 +65,7 @@ for line in bed:
     else:
         gene_end_pos = end_pos
 gene_regions.append([int(chrom), "chr" + chrom + ":" + gene_start_pos + "-" + gene_end_pos])
+
 
 '''Remove identical regions'''
 gene_regions.sort()
@@ -131,7 +140,66 @@ for line in vcf:
         vcf_dict[key] = [DP, Ref_DP, Alt_DP, AF, AA_change, CDS_change]
 
 
-'''Report all interesting positions (All but region) with coverage < 50'''
+'''find all positions in the gvcfs overlapping hotspots (not including indels)'''
+gvcf_panel_dict = {}
+gvcf_run_dict = {}
+gvcf_sample_dict = {}
+if background_panel_filename != "":
+    background_panel = open(background_panel_filename)
+    next(background_panel)
+    for line in background_panel:
+        columns = line.strip().split()
+        chrom = columns[0]
+        pos = columns[1]
+        key = chrom + "_" + pos
+        if key in hotspot_dict:
+            median = float(columns[2])
+            sd = float(columns[3])
+            gvcf_panel_dict[key] = [median, sd]
+next(background_run)
+for line in background_run:
+    columns = line.strip().split()
+    chrom = columns[0]
+    pos = columns[1]
+    key = chrom + "_" + pos
+    if key in hotspot_dict:
+        median = float(columns[2])
+        gvcf_run_dict[key] = median
+with gzip.open(gvcf, 'rt') as infile:
+    file_content = infile.read().split("\n")
+    header = True
+    for line in file_content:
+        if header:
+            if line[:6] == "#CHROM":
+                header = False
+            continue
+        columns = line.strip().split("\t")
+        if len(columns) <= 1:
+            continue
+        chrom = columns[0][3:]
+        pos = columns[1]
+        key = chrom + "_" + pos
+        if key in hotspot_dict:
+            format = columns[8].split(":")
+            data = columns[9].split(":")
+            AD_id = 0
+            for f in format:
+                if f == "AD":
+                    break
+                AD_id += 1
+            AD_info = data[AD_id].split(",")
+            ref_AD = int(AD_info[0])
+            alt_AD = 0
+            for AD in AD_info[1:]:
+                alt_AD += int(AD)
+            DP = ref_AD + alt_AD
+            alt_AF = 0.0
+            if DP > 0:
+                alt_AF = alt_AD / float(DP)
+            gvcf_sample_dict[key] = alt_AF
+
+
+'''Report all interesting positions and also all positions (All but region) with coverage < 200'''
 depth_dict = {}
 for region in gene_regions:
     sample = bam_file.split("/")[-1].split(".")[0]
@@ -145,14 +213,37 @@ for region in gene_regions:
         key = chrom + "_" + pos
         if key in inv_pos:
             coverage = int(lline[2])
-            if coverage < 50:
+            if coverage < 200:
                 for info in inv_pos[key]:
                     outfile.write(info + "\t")
                 outfile.write(str(coverage) + "\t" + pos + "\n")
             for info in inv_pos[key]:
                 outfile2.write(info + "\t")
             outfile2.write(str(coverage) + "\t" + pos)
+            panel_median = 1000
+            panel_sd = 1000
+            run_median = 1000
+            alt_AF = 0.0
+            pos_sd = 1000
+            if key in gvcf_panel_dict:
+                panel_median = gvcf_panel_dict[key][0]
+                panel_sd = gvcf_panel_dict[key][1]
+            if key in gvcf_run_dict:
+                run_median = gvcf_run_dict[key]
+            if key in gvcf_sample_dict:
+                alt_AF = gvcf_sample_dict[key]
+                if panel_sd > 0.0:
+                    pos_sd = (alt_AF - panel_median) / panel_sd
+            found_hotspot = False
+            if key in hotspot_dict and ((alt_AF >= 0.005 and pos_sd >= 3.0) or key in vcf_dict):
+                found_hotspot = True
+                outfile2.write(
+                    "\t" + "{:.4f}".format(panel_median) + "\t" + "{:.4f}".format(panel_sd) + "\t" + "{:.4f}".format(run_median) +
+                    "\t" + "{:.4f}".format(alt_AF) + "\t" + "{:.2f}".format(pos_sd)
+                )
             if key in vcf_dict:
+                if not found_hotspot:
+                    outfile2.write("\t\t\t\t\t")
                 for info in vcf_dict[key]:
                     outfile2.write("\t" + str(info))
             outfile2.write("\n")

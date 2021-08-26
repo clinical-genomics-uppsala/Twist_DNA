@@ -36,6 +36,10 @@ def get_input():
     input_list.append(["Results/DNA/" + s + "/vcf/" + s + ".ensemble.vep.exon.soft_filter.ffpe.vcf.gz" for s in sample_list])
     input_list.append(["Results/DNA/" + s + "/vcf/" + s + ".ensemble.vep.exon.soft_filter.multibp.vcf" for s in sample_list])
 
+    '''Background'''
+    #input_list.append("DATA/background_panel.tsv")
+    input_list.append("DATA/background_run.tsv")
+
     '''CNV'''
     #input_list.append(["CNV_calls/" + sample_id + "-ready.cnr" for sample_id in sample_list])
     #input_list.append(["CNV_calls/" + sample_id + "-ready.cns" for sample_id in sample_list])

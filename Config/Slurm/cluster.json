@@ -31,5 +31,5 @@
     "fastqcR1" : {"n" : 10, "time" : "8:00:00"},
     "fastqcR2" : {"n" : 10, "time" : "8:00:00"},
     "geneFuse" : {"n" : 4, "time" : "4:00:00"},
-    "JuLI_call" : {"n" : 10, "time" : "10:00:00"},
+    "JuLI_call" : {"n" : 10, "time" : "20:00:00"},
 }

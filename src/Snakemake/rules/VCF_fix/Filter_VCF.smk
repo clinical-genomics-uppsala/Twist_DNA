@@ -36,13 +36,39 @@ rule Soft_filter:
     input:
         vcf="recall/{sample}.ensemble.vep.exon.vcf.gz",
     output:
-        vcf="recall/{sample}.ensemble.vep.exon.soft_filter.vcf",
+        vcf=temp("recall/{sample}.ensemble.vep.exon.soft_filter1.vcf"),
     params:
         filter="-e 'FORMAT/AD<20 || FORMAT/DP<50 || FORMAT/AF<0.05'",
     container:
         config["singularity"].get("bcftools", config["singularity"].get("default", ""))
     shell:
         "bcftools filter -O v -o {output.vcf} --soft-filter 'Soft_filter' {params.filter} -m '+' {input.vcf}"
+
+
+rule Soft_artifact_filter:
+    input:
+        vcf="recall/{sample}.ensemble.vep.exon.soft_filter1.vcf",
+    output:
+        vcf=temp("recall/{sample}.ensemble.vep.exon.soft_filter2.vcf"),
+    params:
+        artifacts=config["TMB"]["Artifacts"],
+    container:
+        config["singularity"].get("python", config["singularity"].get("default", ""))
+    script:
+        "../../../scripts/python/Soft_artifact_filter.py"
+
+
+rule Soft_background_filter:
+    input:
+        vcf="recall/{sample}.ensemble.vep.exon.soft_filter2.vcf",
+    output:
+        vcf="recall/{sample}.ensemble.vep.exon.soft_filter.vcf",
+    params:
+        background_panel=config["Background"]["background_panel"],
+    container:
+        config["singularity"].get("python", config["singularity"].get("default", ""))
+    script:
+        "../../../scripts/python/Soft_background_filter.py"
 
 
 rule ffpe_filter:

@@ -48,6 +48,9 @@ reference: #change to hg38
        chrX: 155270560
        chrY: 59373566
 
+Background:
+    background_panel: "/projects/wp1/nobackup/ngs/utveckling/Twist_DNA_DATA/Background/background_panel.tsv"
+
 PoN:
     cnvkit: "DATA/cnvkit_Twist_PoN.cnn"
     #ONCOCNV: "DATA/ONCOCNV_Twist_PoN.txt"
