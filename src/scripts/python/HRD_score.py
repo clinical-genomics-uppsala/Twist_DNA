@@ -81,7 +81,7 @@ def count_LoH_score(filtered_merged_segments):
         nr_LOH_segments = 0
         for segment in filtered_merged_segments[chrom]:
             nr_segments += 1
-            if segment["cn"] != 2 and segment["length"] > 15000000:
+            if (segment["cn"] == 1 or (segment["cn1"] == 0 or segment["cn2"] == 0)) and segment["length"] > 15000000:
                 nr_LOH_segments += 1
         '''No LoH_score for LoH of entire chromosome'''
         if nr_segments > 2 or (nr_segments == 2 and nr_LOH_segments == 1):
