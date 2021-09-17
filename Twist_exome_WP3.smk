@@ -6,6 +6,7 @@ configfile: "Twist_exome_WP3.yaml"
 wildcard_constraints:
     unit="[A-Za-z0-9-]+",
     sample="[^.]+",
+    chr="chr[0-9MTXY]+|[0-9MTXY]+|GL\d+\.\d+",
 
 sample_list = [s.Index  for s in samples.itertuples()]
 
