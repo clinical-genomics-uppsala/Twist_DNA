@@ -93,3 +93,9 @@ singularity:
 
 cartool:
     cov: "100 200 1000"
+
+runfolder_path: "/path/to/workdir"
+samplesheet: "/path/to/samplesheet.csv"
+samples: "/path/to/samples.tsv"
+units: "/path/to/units.tsv"
+bcl2fastq_version: 2.17.1.14
