@@ -1,5 +1,5 @@
 # vim: syntax=python tabstop=4 expandtab
-# coding: utf-8
+# coding: utf-8 
 
 __author__ = "Jonas Almlöf, Patrik Smeds"
 __copyright__ = "Copyright 2021, Patrik Smeds, Jonas Almlöf"
@@ -22,17 +22,34 @@ except:
 sample_list = [s.Index for s in samples.itertuples()]
 sample_number = dict(zip(sample_list, range(1, len(sample_list) + 1)))
 
-_fix_fastq_run_dna_input = (
+_fix_fastq_run_dna_input1 = (
     lambda wildcards: _fix_fastq_dna_input
-    + "/"
+    # + "/"
     + wildcards.sample
-    + "_"
+    + "_S"
     + str(sample_number[wildcards.sample])
     + "_"
-    + wildcards.read
+    # + wildcard.read
+    + "R1"
     + "_001.fastq.gz"
 )
-_fix_fastq_run_dna_output = "fastq_temp/DNA/{sample}_{read}.fastq.gz"
+
+_fix_fastq_run_dna_input2 = (
+    lambda wildcards: _fix_fastq_dna_input
+    # + "/"
+    + wildcards.sample
+    + "_S"
+    + str(sample_number[wildcards.sample])
+    + "_"
+    # + wildcard.read
+    + "R2"
+    + "_001.fastq.gz"
+)
+
+#_fix_fastq_run_dna_output = "fastq_temp/DNA/{sample}_{read}.fastq.gz"
+_fix_fastq_run_dna_output1 = "fastq_temp/DNA/{sample}_R1.fastq.gz"
+_fix_fastq_run_dna_output2 = "fastq_temp/DNA/{sample}_R2.fastq.gz"
+
 if "units" in config:
     _fix_fastq_run_dna_input = lambda wildcards: utils.get_fastq_file(
         units, wildcards.sample, wildcards.unit, "fq1" if wildcards.read == "R1" else "fq2"
@@ -40,11 +57,21 @@ if "units" in config:
     _fix_fastq_run_dna_output = "fastq_temp/DNA/{sample}_{unit}_{read}.fastq.gz"
 
 
-rule fix_fastq_run_dna:
+rule fix_fastq_run_dna1:
     input:
-        fastq=_fix_fastq_run_dna_input,
+        fastq=_fix_fastq_run_dna_input1,
     output:
-        fastq=_fix_fastq_run_dna_output,
+        fastq=_fix_fastq_run_dna_output1,
+    shell:
+        """
+        zcat {input.fastq} | awk '{{if(/^@/){{split($0,a,":");gsub("+","-",a[8]);print(a[1]":"a[2]":"a[3]":"a[4]":"a[5]":"a[6]":"a[7]":UMI_"a[8]":"a[9]":"a[10]":"a[11])}}else{{print($0)}}}}' | gzip > {output.fastq}
+        """
+
+rule fix_fastq_run_dna2:
+    input:
+        fastq=_fix_fastq_run_dna_input2,
+    output:
+        fastq=_fix_fastq_run_dna_output2,
     shell:
         """
         zcat {input.fastq} | awk '{{if(/^@/){{split($0,a,":");gsub("+","-",a[8]);print(a[1]":"a[2]":"a[3]":"a[4]":"a[5]":"a[6]":"a[7]":UMI_"a[8]":"a[9]":"a[10]":"a[11])}}else{{print($0)}}}}' | gzip > {output.fastq}
